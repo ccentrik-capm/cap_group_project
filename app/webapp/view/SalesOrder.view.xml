@@ -1,0 +1,165 @@
+
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:t="sap.ui.table" xmlns:f="sap.ui.layout.form" controllerName="unified.controller.SalesOrder" displayBlock="true">
+<Page title="Sales Order Management" showNavButton="true" navButtonPress="onNavHome">
+<content>
+<!--  ── OPERATION SELECTOR ──  -->
+<Panel headerText="Select Operation" visible="{/so_showOp}" class="sapUiLargeMargin">
+<VBox alignItems="Center" class="sapUiMediumMarginTop sapUiMediumMarginBottom">
+<HBox justifyContent="Center">
+<Button text="Create" type="Accept" icon="sap-icon://add" press="onCreate" width="160px" class="sapUiSmallMargin"/>
+<Button text="Read" type="Emphasized" icon="sap-icon://search" press="onRead" width="160px" class="sapUiSmallMargin"/>
+<Button text="Update" type="Default" icon="sap-icon://edit" press="onUpdate" width="160px" class="sapUiSmallMargin"/>
+<Button text="Delete" type="Reject" icon="sap-icon://delete" press="onDelete" width="160px" class="sapUiSmallMargin"/>
+</HBox>
+</VBox>
+</Panel>
+<!--  ── CREATE ──  -->
+<Panel headerText="Create Sales Order" visible="{/so_showCreate}" class="sapUiLargeMargin">
+<Toolbar>
+<Button text="Back" icon="sap-icon://nav-back" press="onBack"/>
+</Toolbar>
+<f:SimpleForm editable="true" layout="ResponsiveGridLayout" columnsL="2" columnsM="1">
+<f:content>
+<Label text="VBELN — Sales Order No" required="true"/>
+<Input value="{/so_createPayload/VBELN}" placeholder="e.g. 0000000001"/>
+<Label text="ERDAT — Creation Date"/>
+<Input value="{/so_createPayload/ERDAT}" placeholder="e.g. 2024-01-01"/>
+<Label text="KUNNR — Customer No"/>
+<Input value="{/so_createPayload/KUNNR}" placeholder="e.g. CUST001"/>
+<Label text="ERNAM — Created By"/>
+<Input value="{/so_createPayload/ERNAM}" placeholder="e.g. ADMIN"/>
+</f:content>
+</f:SimpleForm>
+<Toolbar>
+<Button text="Save" type="Accept" icon="sap-icon://save" press="onSave"/>
+</Toolbar>
+</Panel>
+<!--  ── READ ──  -->
+<Panel headerText="View Sales Orders" visible="{/so_showRead}" class="sapUiLargeMargin">
+<Toolbar>
+<Button text="Back" icon="sap-icon://nav-back" press="onBack"/>
+</Toolbar>
+<f:SimpleForm layout="ResponsiveGridLayout">
+<f:content>
+<Label text="VBELN — Sales Order No"/>
+<HBox>
+<Input value="{/so_readVBELN}" placeholder="Enter full or partial VBELN"/>
+<Button icon="sap-icon://search" text="Search" press="onSearchSalesOrder" class="sapUiSmallMarginBegin"/>
+</HBox>
+</f:content>
+</f:SimpleForm>
+<Panel headerText="Sales Orders" visible="{/so_showReadResult}">
+<t:Table id="soReadTable" rows="{/so_salesOrders}" visibleRowCount="5" selectionMode="None">
+<t:columns>
+<t:Column>
+<Label text="VBELN"/>
+<t:template>
+<Text text="{VBELN}"/>
+</t:template>
+</t:Column>
+<t:Column>
+<Label text="ERDAT"/>
+<t:template>
+<Text text="{ERDAT}"/>
+</t:template>
+</t:Column>
+<t:Column>
+<Label text="KUNNR"/>
+<t:template>
+<Text text="{KUNNR}"/>
+</t:template>
+</t:Column>
+<t:Column>
+<Label text="ERNAM"/>
+<t:template>
+<Text text="{ERNAM}"/>
+</t:template>
+</t:Column>
+</t:columns>
+</t:Table>
+</Panel>
+</Panel>
+<!--  ── UPDATE ──  -->
+<Panel headerText="Update Sales Order" visible="{/so_showUpdate}" class="sapUiLargeMargin">
+<Toolbar>
+<Button text="Back" icon="sap-icon://nav-back" press="onBack"/>
+</Toolbar>
+<f:SimpleForm layout="ResponsiveGridLayout">
+<f:content>
+<Label text="VBELN — Sales Order No"/>
+<HBox>
+<Input value="{/so_searchVBELN}" placeholder="Enter VBELN"/>
+<Button text="Search & Load" icon="sap-icon://search" press="onEditSalesOrder" class="sapUiSmallMarginBegin"/>
+</HBox>
+</f:content>
+</f:SimpleForm>
+<Panel visible="{/so_editMode}" headerText="Edit Sales Order">
+<f:SimpleForm layout="ResponsiveGridLayout">
+<f:content>
+<Label text="VBELN"/>
+<Text text="{/so_editPayload/VBELN}"/>
+<Label text="ERDAT"/>
+<Input value="{/so_editPayload/ERDAT}"/>
+<Label text="KUNNR"/>
+<Input value="{/so_editPayload/KUNNR}"/>
+<Label text="ERNAM"/>
+<Input value="{/so_editPayload/ERNAM}"/>
+</f:content>
+</f:SimpleForm>
+<Toolbar>
+<Button text="Update" type="Accept" icon="sap-icon://save" press="onUpdateSalesOrder"/>
+<Button text="Cancel" type="Reject" icon="sap-icon://cancel" press="onCancelEdit"/>
+</Toolbar>
+</Panel>
+</Panel>
+<!--  ── DELETE ──  -->
+<Panel headerText="Delete Sales Order" visible="{/so_showDelete}" class="sapUiLargeMargin">
+<Toolbar>
+<Button text="Back" icon="sap-icon://nav-back" press="onBack"/>
+</Toolbar>
+<f:SimpleForm>
+<f:content>
+<Label text="VBELN — Sales Order No"/>
+<HBox>
+<Input value="{/so_deleteVBELN}" placeholder="Enter VBELN"/>
+<Button text="Search" icon="sap-icon://search" press="onDeleteSearch" class="sapUiSmallMarginBegin"/>
+</HBox>
+</f:content>
+</f:SimpleForm>
+<Panel visible="{/so_showDeleteResult}" headerText="Sales Orders">
+<t:Table id="soDeleteTable" rows="{/so_salesOrders}" selectionMode="MultiToggle" visibleRowCount="5">
+<t:columns>
+<t:Column>
+<Label text="VBELN"/>
+<t:template>
+<Text text="{VBELN}"/>
+</t:template>
+</t:Column>
+<t:Column>
+<Label text="ERDAT"/>
+<t:template>
+<Text text="{ERDAT}"/>
+</t:template>
+</t:Column>
+<t:Column>
+<Label text="KUNNR"/>
+<t:template>
+<Text text="{KUNNR}"/>
+</t:template>
+</t:Column>
+<t:Column>
+<Label text="ERNAM"/>
+<t:template>
+<Text text="{ERNAM}"/>
+</t:template>
+</t:Column>
+</t:columns>
+</t:Table>
+<Toolbar>
+<Button text="Delete Selected" type="Reject" icon="sap-icon://delete" press="onDeleteSelected"/>
+</Toolbar>
+</Panel>
+</Panel>
+</content>
+</Page>
+</mvc:View>

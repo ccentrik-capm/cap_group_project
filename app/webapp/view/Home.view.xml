@@ -1,0 +1,34 @@
+
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="unified.controller.Home" displayBlock="true">
+<Page showHeader="false">
+<content>
+<VBox alignItems="Center" class="sapUiLargeMarginTop">
+<Title text="Ccentrik Management System" level="H1" titleStyle="H2" class="sapUiMediumMarginBottom"/>
+<Text text="Select a module to get started" class="sapUiSmallMarginBottom sapUiMediumMarginBottom"/>
+<HBox justifyContent="Center" wrap="Wrap" class="sapUiMediumMarginTop">
+<VBox alignItems="Center" class="sapUiSmallMargin">
+<Button text="Sales Order" type="Emphasized" icon="sap-icon://sales-order" width="190px" press="onNavSalesOrder" class="sapUiSmallMarginBottom"/>
+<Text text="VBAK — Create, Read, Update, Delete"/>
+</VBox>
+<VBox alignItems="Center" class="sapUiSmallMargin">
+<Button text="Sales Items" type="Emphasized" icon="sap-icon://list" width="190px" press="onNavSalesItem" class="sapUiSmallMarginBottom"/>
+<Text text="VBAP — Line item management"/>
+</VBox>
+<VBox alignItems="Center" class="sapUiSmallMargin">
+<Button text="Customer Master" type="Emphasized" icon="sap-icon://customer" width="190px" press="onNavCustomer" class="sapUiSmallMarginBottom"/>
+<Text text="Customer CRUD with search"/>
+</VBox>
+<VBox alignItems="Center" class="sapUiSmallMargin">
+<Button text="Vendor Master" type="Emphasized" icon="sap-icon://supplier" width="190px" press="onNavVendor" class="sapUiSmallMarginBottom"/>
+<Text text="Vendor CRUD — V001 format"/>
+</VBox>
+<VBox alignItems="Center" class="sapUiSmallMargin">
+<Button text="Purchase Orders" type="Emphasized" icon="sap-icon://cart" width="190px" press="onNavPurchase" class="sapUiSmallMarginBottom"/>
+<Text text="PO with line items"/>
+</VBox>
+</HBox>
+<Text text="Ccentrik Infotech Pvt. Ltd." class="sapUiLargeMarginTop"/>
+</VBox>
+</content>
+</Page>
+</mvc:View>

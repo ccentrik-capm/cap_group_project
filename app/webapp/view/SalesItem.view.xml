@@ -1,0 +1,220 @@
+
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:t="sap.ui.table" xmlns:f="sap.ui.layout.form" controllerName="unified.controller.SalesItem" displayBlock="true">
+<Page title="Sales Order Item Management" showNavButton="true" navButtonPress="onNavHome">
+<content>
+<!--  ── OPERATION SELECTOR ──  -->
+<Panel headerText="Select Operation" visible="{/si_showOp}" class="sapUiLargeMargin">
+<VBox alignItems="Center" class="sapUiMediumMarginTop sapUiMediumMarginBottom">
+<HBox justifyContent="Center">
+<Button text="Create" type="Accept" icon="sap-icon://add" press="onCreate" width="160px" class="sapUiSmallMargin"/>
+<Button text="Read" type="Emphasized" icon="sap-icon://search" press="onRead" width="160px" class="sapUiSmallMargin"/>
+<Button text="Update" type="Default" icon="sap-icon://edit" press="onUpdate" width="160px" class="sapUiSmallMargin"/>
+<Button text="Delete" type="Reject" icon="sap-icon://delete" press="onDelete" width="160px" class="sapUiSmallMargin"/>
+</HBox>
+</VBox>
+</Panel>
+<!--  ── CREATE ──  -->
+<Panel headerText="Create Sales Order Item" visible="{/si_showCreate}" class="sapUiLargeMargin">
+<Toolbar>
+<Button text="Back" icon="sap-icon://nav-back" press="onBack"/>
+</Toolbar>
+<f:SimpleForm editable="true" layout="ResponsiveGridLayout" columnsL="2" columnsM="1">
+<f:content>
+<Label text="VBELN — Sales Order No" required="true"/>
+<Input value="{/si_createPayload/VBELN}" placeholder="e.g. 0000000001"/>
+<Label text="POSNR — Line Item No" required="true"/>
+<Input value="{/si_createPayload/POSNR}" placeholder="e.g. 000010"/>
+<Label text="MATNR — Material No" required="true"/>
+<Input value="{/si_createPayload/MATNR}" placeholder="e.g. MAT0001"/>
+<Label text="MATKL — Material Group"/>
+<Input value="{/si_createPayload/MATKL}" placeholder="e.g. PLASTICS"/>
+<Label text="MENGE — Quantity"/>
+<Input value="{/si_createPayload/MENGE}" placeholder="e.g. 5" type="Number"/>
+<Label text="MEINS — Unit"/>
+<Input value="{/si_createPayload/MEINS}" placeholder="e.g. EA"/>
+<Label text="NETPR — Net Price"/>
+<Input value="{/si_createPayload/NETPR}" placeholder="e.g. 25000" type="Number"/>
+<Label text="PEINH — Currency"/>
+<Input value="{/si_createPayload/PEINH}" placeholder="e.g. INR"/>
+</f:content>
+</f:SimpleForm>
+<Toolbar>
+<Button text="Save" type="Accept" icon="sap-icon://save" press="onSave"/>
+</Toolbar>
+</Panel>
+<!--  ── READ ──  -->
+<Panel headerText="View Sales Order Items" visible="{/si_showRead}" class="sapUiLargeMargin">
+<Toolbar>
+<Button text="Back" icon="sap-icon://nav-back" press="onBack"/>
+</Toolbar>
+<f:SimpleForm layout="ResponsiveGridLayout">
+<f:content>
+<Label text="VBELN / POSNR"/>
+<HBox>
+<Input value="{/si_readVBELN}" placeholder="Enter VBELN"/>
+<Input value="{/si_readPOSNR}" placeholder="POSNR (optional)" class="sapUiSmallMarginBegin"/>
+<Button icon="sap-icon://search" text="Search" press="onSearchItem" class="sapUiSmallMarginBegin"/>
+</HBox>
+</f:content>
+</f:SimpleForm>
+<Panel headerText="Sales Order Items" visible="{/si_showReadResult}">
+<t:Table id="siReadTable" rows="{/si_salesItems}" visibleRowCount="5" selectionMode="None">
+<t:columns>
+<t:Column>
+<Label text="VBELN"/>
+<t:template>
+<Text text="{VBELN}"/>
+</t:template>
+</t:Column>
+<t:Column>
+<Label text="POSNR"/>
+<t:template>
+<Text text="{POSNR}"/>
+</t:template>
+</t:Column>
+<t:Column>
+<Label text="MATNR"/>
+<t:template>
+<Text text="{MATNR}"/>
+</t:template>
+</t:Column>
+<t:Column>
+<Label text="MATKL"/>
+<t:template>
+<Text text="{MATKL}"/>
+</t:template>
+</t:Column>
+<t:Column>
+<Label text="MENGE"/>
+<t:template>
+<Text text="{MENGE}"/>
+</t:template>
+</t:Column>
+<t:Column>
+<Label text="MEINS"/>
+<t:template>
+<Text text="{MEINS}"/>
+</t:template>
+</t:Column>
+<t:Column>
+<Label text="NETPR"/>
+<t:template>
+<Text text="{NETPR}"/>
+</t:template>
+</t:Column>
+<t:Column>
+<Label text="PEINH"/>
+<t:template>
+<Text text="{PEINH}"/>
+</t:template>
+</t:Column>
+</t:columns>
+</t:Table>
+</Panel>
+</Panel>
+<!--  ── UPDATE ──  -->
+<Panel headerText="Update Sales Order Item" visible="{/si_showUpdate}" class="sapUiLargeMargin">
+<Toolbar>
+<Button text="Back" icon="sap-icon://nav-back" press="onBack"/>
+</Toolbar>
+<f:SimpleForm layout="ResponsiveGridLayout">
+<f:content>
+<Label text="VBELN / POSNR"/>
+<HBox>
+<Input value="{/si_searchVBELN}" placeholder="VBELN"/>
+<Input value="{/si_searchPOSNR}" placeholder="POSNR" class="sapUiSmallMarginBegin"/>
+<Button text="Search & Load" icon="sap-icon://search" press="onEditItem" class="sapUiSmallMarginBegin"/>
+</HBox>
+</f:content>
+</f:SimpleForm>
+<Panel visible="{/si_editMode}" headerText="Edit Sales Order Item">
+<f:SimpleForm layout="ResponsiveGridLayout">
+<f:content>
+<Label text="VBELN"/>
+<Text text="{/si_editPayload/VBELN}"/>
+<Label text="POSNR"/>
+<Text text="{/si_editPayload/POSNR}"/>
+<Label text="MATNR"/>
+<Text text="{/si_editPayload/MATNR}"/>
+<Label text="MATKL"/>
+<Input value="{/si_editPayload/MATKL}"/>
+<Label text="MENGE"/>
+<Input value="{/si_editPayload/MENGE}" type="Number"/>
+<Label text="MEINS"/>
+<Input value="{/si_editPayload/MEINS}"/>
+<Label text="NETPR"/>
+<Input value="{/si_editPayload/NETPR}" type="Number"/>
+<Label text="PEINH"/>
+<Input value="{/si_editPayload/PEINH}"/>
+</f:content>
+</f:SimpleForm>
+<Toolbar>
+<Button text="Update" type="Accept" icon="sap-icon://save" press="onUpdateItem"/>
+<Button text="Cancel" type="Reject" icon="sap-icon://cancel" press="onCancelEdit"/>
+</Toolbar>
+</Panel>
+</Panel>
+<!--  ── DELETE ──  -->
+<Panel headerText="Delete Sales Order Item" visible="{/si_showDelete}" class="sapUiLargeMargin">
+<Toolbar>
+<Button text="Back" icon="sap-icon://nav-back" press="onBack"/>
+</Toolbar>
+<f:SimpleForm>
+<f:content>
+<Label text="VBELN / POSNR"/>
+<HBox>
+<Input value="{/si_deleteVBELN}" placeholder="VBELN"/>
+<Input value="{/si_deletePOSNR}" placeholder="POSNR (optional)" class="sapUiSmallMarginBegin"/>
+<Button text="Search" icon="sap-icon://search" press="onDeleteSearch" class="sapUiSmallMarginBegin"/>
+</HBox>
+</f:content>
+</f:SimpleForm>
+<Panel visible="{/si_showDeleteResult}" headerText="Sales Order Items">
+<t:Table id="siDeleteTable" rows="{/si_salesItems}" selectionMode="MultiToggle" visibleRowCount="5">
+<t:columns>
+<t:Column>
+<Label text="VBELN"/>
+<t:template>
+<Text text="{VBELN}"/>
+</t:template>
+</t:Column>
+<t:Column>
+<Label text="POSNR"/>
+<t:template>
+<Text text="{POSNR}"/>
+</t:template>
+</t:Column>
+<t:Column>
+<Label text="MATNR"/>
+<t:template>
+<Text text="{MATNR}"/>
+</t:template>
+</t:Column>
+<t:Column>
+<Label text="MATKL"/>
+<t:template>
+<Text text="{MATKL}"/>
+</t:template>
+</t:Column>
+<t:Column>
+<Label text="MENGE"/>
+<t:template>
+<Text text="{MENGE}"/>
+</t:template>
+</t:Column>
+<t:Column>
+<Label text="MEINS"/>
+<t:template>
+<Text text="{MEINS}"/>
+</t:template>
+</t:Column>
+</t:columns>
+</t:Table>
+<Toolbar>
+<Button text="Delete Selected" type="Reject" icon="sap-icon://delete" press="onDeleteSelected"/>
+</Toolbar>
+</Panel>
+</Panel>
+</content>
+</Page>
+</mvc:View>

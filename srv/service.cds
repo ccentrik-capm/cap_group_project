@@ -6,6 +6,10 @@ using { com.project.purchaseorder.PurchaseOrderItem as purchaseitemtable } from 
 using { com.project.vendormaster.VendorMaster as vendortable } from '../db/ZVM_ST_2703';
 using { com.project.material.ZMARA as mat1 } from '../db/ZMM_AR_2703';
 using { com.project.material.ZMARC as mat2 } from '../db/ZMM_AR_2703';
+using { com.project.material.ZMARD as mat3 } from '../db/ZMM_AR_2703';
+using { com.project.material.ZMAKTX as mat4 } from '../db/ZMM_AR_2703';
+using { com.project.material.ZMAT_STORAGE as mat5 } from '../db/ZMM_AR_2703';
+
 
 
 service SO_Headertable {
@@ -42,4 +46,18 @@ service Materialservice2 {
     entity marc as projection on mat2;
 
 }
+service MaterialService3 {
+    entity mara as projection on mat3;
+
+}
+
+service Materialservice4 {
+    entity marc as projection on mat4;
+
+}
+service MaterialService5 {
+    entity mara as projection on mat5;
+
+}
+
 

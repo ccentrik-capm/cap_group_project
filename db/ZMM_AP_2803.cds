@@ -15,6 +15,7 @@ entity PurchaseOrder: managed, cuid {
     BSART : String(4);
 
     @title: 'vendor'
+
     @mandatory
     LIFNR : String(10);
 

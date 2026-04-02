@@ -1,0 +1,83 @@
+{
+
+  "_version": "1.32.0",
+  "sap.app": {
+    "id": "unified",
+    "type": "application",
+    "title": "Ccentrik Unified Management System",
+    "description": "Merged UI for all 4 teams",
+    "dataSources": {
+      "salesOrderService": {
+        "uri": "/odata/v4/sales-order/",
+        "type": "OData",
+        "settings": { "odataVersion": "4.0" }
+      },
+      "customerService": {
+        "uri": "/odata/v4/customer/",
+        "type": "OData",
+        "settings": { "odataVersion": "4.0" }
+      },
+      "vendorService": {
+        "uri": "/odata/v4/vendor/",
+        "type": "OData",
+        "settings": { "odataVersion": "4.0" }
+      },
+      "purchaseOrderService": {
+        "uri": "/po/",
+        "type": "OData",
+        "settings": { "odataVersion": "4.0" }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "rootView": {
+      "viewName": "unified.view.App",
+      "type": "XML",
+      "async": true,
+      "id": "appView"
+    },
+    "dependencies": {
+      "minUI5Version": "1.108.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.ui.layout": {},
+        "sap.ui.table": {}
+      }
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "viewPath": "unified.view",
+        "controlId": "mainApp",
+        "controlAggregation": "pages",
+        "async": true
+      },
+      "routes": [
+        { "name": "home",        "pattern": "",           "target": "home"        },
+        { "name": "salesorder",  "pattern": "salesorder", "target": "salesorder"  },
+        { "name": "salesitem",   "pattern": "salesitem",  "target": "salesitem"   },
+        { "name": "customer",    "pattern": "customer",   "target": "customer"    },
+        { "name": "vendor",      "pattern": "vendor",     "target": "vendor"      },
+        { "name": "purchase",    "pattern": "purchase",   "target": "purchase"    }
+      ],
+      "targets": {
+        "home":       { "viewName": "Home",        "viewLevel": 1 },
+        "salesorder": { "viewName": "SalesOrder",  "viewLevel": 2 },
+        "salesitem":  { "viewName": "SalesItem",   "viewLevel": 2 },
+        "customer":   { "viewName": "Customer",    "viewLevel": 2 },
+        "vendor":     { "viewName": "Vendor",      "viewLevel": 2 },
+        "purchase":   { "viewName": "Purchase",    "viewLevel": 2 }
+      }
+    }
+  }
+}

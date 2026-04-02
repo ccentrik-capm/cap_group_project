@@ -1,0 +1,52 @@
+
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:t="sap.ui.table" controllerName="unified.controller.Customer" displayBlock="true">
+<Page title="Customer Master" showNavButton="true" navButtonPress="onNavHome">
+<headerContent>
+<Button text="Create" type="Emphasized" icon="sap-icon://add" press="onCreatePress"/>
+<Button text="View" type="Default" icon="sap-icon://eye" press="onViewPress"/>
+<Button text="Edit" type="Default" icon="sap-icon://edit" press="onEditPress"/>
+<Button text="Delete" type="Reject" icon="sap-icon://delete" press="onDeletePress"/>
+</headerContent>
+<content>
+<Toolbar>
+<Title text="Customer List"/>
+<ToolbarSpacer/>
+<SearchField id="cmSearchField" placeholder="Search by name, city or phone..." search="onSearch" liveChange="onSearch" width="300px"/>
+</Toolbar>
+<t:Table id="customerTable" rows="{customer>/Customers}" selectionMode="MultiToggle" visibleRowCount="10" alternateRowColors="true" class="sapUiMediumMarginTop">
+<t:columns>
+<t:Column width="100px">
+<Label text="Customer ID"/>
+<t:template>
+<Text text="{customer>CustomerID}"/>
+</t:template>
+</t:Column>
+<t:Column width="200px">
+<Label text="Customer Name"/>
+<t:template>
+<Text text="{customer>customerName}"/>
+</t:template>
+</t:Column>
+<t:Column width="150px">
+<Label text="City"/>
+<t:template>
+<Text text="{customer>city}"/>
+</t:template>
+</t:Column>
+<t:Column width="150px">
+<Label text="Address No."/>
+<t:template>
+<Text text="{customer>addressNo}"/>
+</t:template>
+</t:Column>
+<t:Column width="150px">
+<Label text="Phone"/>
+<t:template>
+<Text text="{customer>phone}"/>
+</t:template>
+</t:Column>
+</t:columns>
+</t:Table>
+</content>
+</Page>
+</mvc:View>

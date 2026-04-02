@@ -1,3 +1,5 @@
+
+
 namespace com.project.salesorder;
 
 entity SOHeaderTable{

@@ -1,0 +1,115 @@
+
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.ui.layout.form" controllerName="unified.controller.Vendor" displayBlock="true">
+<Page title="Vendor Master" showNavButton="true" navButtonPress="onNavHome">
+<content>
+<!--  ── OPERATION SELECTOR ──  -->
+<Panel headerText="Select Operation" visible="{/vm_showOp}" class="sapUiLargeMargin">
+<VBox alignItems="Center" class="sapUiMediumMarginTop sapUiMediumMarginBottom">
+<HBox justifyContent="Center" wrap="Wrap">
+<Button text="Create Vendor" type="Accept" icon="sap-icon://add" press="onNavCreate" width="170px" class="sapUiSmallMargin"/>
+<Button text="Read Vendor" type="Emphasized" icon="sap-icon://search" press="onNavRead" width="170px" class="sapUiSmallMargin"/>
+<Button text="Update Vendor" type="Default" icon="sap-icon://edit" press="onNavUpdate" width="170px" class="sapUiSmallMargin"/>
+<Button text="Delete Vendor" type="Reject" icon="sap-icon://delete" press="onNavDelete" width="170px" class="sapUiSmallMargin"/>
+</HBox>
+</VBox>
+</Panel>
+<!--  ── CREATE ──  -->
+<Panel headerText="Create Vendor" visible="{/vm_showCreate}" class="sapUiLargeMargin">
+<Toolbar>
+<Button text="Back" icon="sap-icon://nav-back" press="onBack"/>
+</Toolbar>
+<f:SimpleForm editable="true" layout="ResponsiveGridLayout" columnsL="2" columnsM="1" labelSpanL="3" labelSpanM="3" emptySpanL="1" emptySpanM="1">
+<f:content>
+<Label text="Vendor ID (e.g. V001)" required="true"/>
+<Input id="vmIdInput" maxLength="10" width="50%" placeholder="V001"/>
+<Label text="Vendor Name" required="true"/>
+<Input id="vmNameInput" width="50%" placeholder="Vendor Name"/>
+<Label text="City"/>
+<Input id="vmCityInput" width="50%" placeholder="City"/>
+<Label text="Address Number"/>
+<Input id="vmAddrInput" width="50%" placeholder="Address"/>
+<Label text="Phone Number"/>
+<Input id="vmPhoneInput" maxLength="15" width="50%" placeholder="Phone"/>
+</f:content>
+</f:SimpleForm>
+<Toolbar>
+<ToolbarSpacer/>
+<Button text="Save Vendor" type="Emphasized" press="onSave"/>
+<Button text="Clear" press="onClear"/>
+<ToolbarSpacer/>
+</Toolbar>
+</Panel>
+<!--  ── READ ──  -->
+<Panel headerText="Read Vendor" visible="{/vm_showRead}" class="sapUiLargeMargin">
+<Toolbar>
+<Button text="Back" icon="sap-icon://nav-back" press="onBack"/>
+</Toolbar>
+<f:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanL="3" labelSpanM="3" emptySpanL="1" emptySpanM="1" columnsL="1" columnsM="1">
+<f:content>
+<Label text="Vendor ID" required="true"/>
+<Input id="vmReadIdInput" width="50%" placeholder="e.g. V001"/>
+</f:content>
+</f:SimpleForm>
+<Toolbar>
+<ToolbarSpacer/>
+<Button text="Fetch Record" type="Emphasized" press="onFetch"/>
+<ToolbarSpacer/>
+</Toolbar>
+<Panel class="sapUiSmallMargin">
+<VBox id="vmReadResult" class="sapUiSmallMargin"/>
+</Panel>
+</Panel>
+<!--  ── UPDATE ──  -->
+<Panel headerText="Update Vendor" visible="{/vm_showUpdate}" class="sapUiLargeMargin">
+<Toolbar>
+<Button text="Back" icon="sap-icon://nav-back" press="onBack"/>
+</Toolbar>
+<f:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanL="3" labelSpanM="3" emptySpanL="1" emptySpanM="1" columnsL="1" columnsM="1">
+<f:content>
+<Label text="Vendor ID" required="true"/>
+<Input id="vmUpdateLookupId" width="50%" placeholder="e.g. V001"/>
+</f:content>
+</f:SimpleForm>
+<Toolbar>
+<ToolbarSpacer/>
+<Button text="Load Record" type="Emphasized" press="onLoad"/>
+<ToolbarSpacer/>
+</Toolbar>
+<Panel id="vmEditPanel" class="sapUiMediumMargin" visible="false">
+<f:SimpleForm id="vmUpdateFormContainer" editable="true" layout="ResponsiveGridLayout" labelSpanL="3" labelSpanM="3" emptySpanL="1" emptySpanM="1" columnsL="1" columnsM="1"/>
+<Toolbar>
+<ToolbarSpacer/>
+<Button text="Save Changes" type="Emphasized" press="onSaveUpdate"/>
+<ToolbarSpacer/>
+</Toolbar>
+</Panel>
+</Panel>
+<!--  ── DELETE ──  -->
+<Panel headerText="Delete Vendor" visible="{/vm_showDelete}" class="sapUiLargeMargin">
+<Toolbar>
+<Button text="Back" icon="sap-icon://nav-back" press="onBack"/>
+</Toolbar>
+<f:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanL="3" labelSpanM="3" emptySpanL="1" emptySpanM="1" columnsL="1" columnsM="1">
+<f:content>
+<Label text="Vendor ID" required="true"/>
+<Input id="vmDeleteIdInput" width="50%" placeholder="e.g. V001"/>
+</f:content>
+</f:SimpleForm>
+<Toolbar>
+<ToolbarSpacer/>
+<Button text="Find Vendor" type="Negative" press="onFetchDelete"/>
+<ToolbarSpacer/>
+</Toolbar>
+<Panel id="vmDeletePreview" class="sapUiMediumMargin" visible="false">
+<VBox id="vmDeleteResult" class="sapUiSmallMargin"/>
+<Toolbar>
+<ToolbarSpacer/>
+<Button text="Confirm Delete" type="Negative" press="onConfirmDelete"/>
+<Button text="Cancel" press="onCancelDelete"/>
+<ToolbarSpacer/>
+</Toolbar>
+</Panel>
+</Panel>
+</content>
+</Page>
+</mvc:View>
