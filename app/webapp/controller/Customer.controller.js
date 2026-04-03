@@ -5,7 +5,6 @@ sap.ui.define([
 ], function (Controller, MessageBox, MessageToast) {
     "use strict";
 
-    // ── Correct URL from cds watch output ──
     var BASE = "/c-customer/Customer";
 
     return Controller.extend("unified.controller.Customer", {
@@ -62,7 +61,7 @@ sap.ui.define([
             m.setProperty("/cm_showUpdate", false);
             m.setProperty("/cm_showDelete", false);
             m.setProperty("/cm_searchQuery", "");
-            // Load all customers by default
+            //to Load all customers by default
             fetch(BASE)
                 .then(function (r) { return r.json(); })
                 .then(function (d) {

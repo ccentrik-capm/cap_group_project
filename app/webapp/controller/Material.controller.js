@@ -9,9 +9,6 @@ sap.ui.define([
 
     return Controller.extend("unified.controller.Material", {
 
-        // ─────────────────────────────────────────────────────────────
-        // LIFECYCLE
-        // ─────────────────────────────────────────────────────────────
 
         onInit: function () {
             this._oUpdateContext = null;

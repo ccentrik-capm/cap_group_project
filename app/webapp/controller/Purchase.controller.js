@@ -231,9 +231,7 @@ sap.ui.define([
 ], function (Controller, MessageBox, MessageToast, Dialog, List, StandardListItem, Button) {
     "use strict";
 
-    // ── Correct URLs from cds watch output ──────────────────────────
-    // PurchaseOrder header  → /odata/v4/po-table/po_headertable   (key = ID, UUID from cuid)
-    // PurchaseOrderItem     → /odata/v4/po-item/po_itemtable       (key = ID, UUID from cuid)
+
     var PO_BASE  = "/po-table/po_headertable";
     var POI_BASE = "/po-item/po_itemtable";
 

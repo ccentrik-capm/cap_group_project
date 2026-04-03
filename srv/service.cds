@@ -69,37 +69,37 @@ using { com.project.purchaseorder.PurchaseOrderItem as purchaseitemtable } from 
 using { com.project.vendormaster.VendorMaster as vendortable } from '../db/ZVM_ST_2703';
 using {ZMM_SBC_2903 as db} from '../db/zmara_schema';
 
-/* 🔵 SALES ORDER */
+/* SALES ORDER */
 service SO_Headertable @(path:'/so-headertable') {
     entity So_Orderstable as projection on headertable;
 }
 
 
-/* 🔵 SALES ITEM */
+/* SALES ITEM */
 service SO_Itemtable @(path:'/so-itemtable') {
     entity So_Itemstables as projection on Itemtable;
 }
 
 
-/* 🔵 CUSTOMER */
+/* CUSTOMER */
 service C_customer @(path:'/c-customer') {
     entity Customer as projection on customertable;
 }
 
 
-/* 🔵 PURCHASE HEADER */
+/* PURCHASE HEADER */
 service PoTable @(path:'/po-table') {
     entity po_headertable as projection on purchasetable;
 }
 
 
-/* 🔵 PURCHASE ITEM */
+/* PURCHASE ITEM */
 service PoItem @(path:'/po-item') {
     entity po_itemtable as projection on purchaseitemtable;
 }
 
 
-/* 🔵 VENDOR */
+/* VENDOR */
 service vendorService @(path:'/vendor') {
     entity VendorMaster as projection on vendortable;
 }
