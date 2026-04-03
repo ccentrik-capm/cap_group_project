@@ -123,7 +123,7 @@
 <HBox>
 <Input value="{/si_searchVBELN}" placeholder="VBELN"/>
 <Input value="{/si_searchPOSNR}" placeholder="POSNR" class="sapUiSmallMarginBegin"/>
-<Button text="Search & Load" icon="sap-icon://search" press="onEditItem" class="sapUiSmallMarginBegin"/>
+<Button text="Search &amp; Load" icon="sap-icon://search" press="onEditItem" class="sapUiSmallMarginBegin"/>
 </HBox>
 </f:content>
 </f:SimpleForm>

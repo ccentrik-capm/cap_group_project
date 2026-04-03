@@ -1,16 +1,12 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
-    "sap/m/Dialog",
-    "sap/m/Button",
-    "sap/m/Input",
-    "sap/m/Label",
-    "sap/m/VBox",
-    "sap/m/MessageToast",
     "sap/m/MessageBox",
-    "sap/ui/model/Filter",
-    "sap/ui/model/FilterOperator"
-], function (Controller, Dialog, Button, Input, Label, VBox, MessageToast, MessageBox, Filter, FilterOperator) {
+    "sap/m/MessageToast"
+], function (Controller, MessageBox, MessageToast) {
     "use strict";
+
+    // ── Correct URL from cds watch output ──
+    var BASE = "/c-customer/Customer";
 
     return Controller.extend("unified.controller.Customer", {
 
@@ -20,10 +16,22 @@ sap.ui.define([
         },
 
         _onRouteMatched: function () {
-            var oTable = this.byId("customerTable");
-            if (oTable && oTable.getBinding("rows")) {
-                oTable.getBinding("rows").refresh();
-            }
+            var m = this.getView().getModel();
+            if (!m) return;
+            m.setProperty("/cm_showOp", true);
+            m.setProperty("/cm_showCreate", false);
+            m.setProperty("/cm_showRead", false);
+            m.setProperty("/cm_showUpdate", false);
+            m.setProperty("/cm_showDelete", false);
+            m.setProperty("/cm_showReadResult", false);
+            m.setProperty("/cm_showDeleteResult", false);
+            m.setProperty("/cm_editMode", false);
+            m.setProperty("/cm_customers", []);
+            m.setProperty("/cm_createPayload", { kunnr: "", name1: "", orto1: "", adrnr: "", phone: "" });
+            m.setProperty("/cm_editPayload", {});
+            m.setProperty("/cm_searchQuery", "");
+            m.setProperty("/cm_searchKunnr", "");
+            m.setProperty("/cm_deleteKunnr", "");
         },
 
         onNavHome: function () {
@@ -35,156 +43,229 @@ sap.ui.define([
             return str.replace(/\b\w/g, function (l) { return l.toUpperCase(); });
         },
 
-        // ── SEARCH ───────────────────────────────────────────────────
-        onSearch: function (oEvent) {
-            var sQuery = oEvent.getParameter("query") || oEvent.getParameter("newValue");
-            var oTable = this.byId("customerTable");
-            var oBinding = oTable.getBinding("rows");
-            if (sQuery && sQuery.trim()) {
-                var aFilters = [
-                    new Filter({ path: "customerName", operator: FilterOperator.Contains, value1: sQuery, caseSensitive: false }),
-                    new Filter({ path: "city",         operator: FilterOperator.Contains, value1: sQuery, caseSensitive: false }),
-                    new Filter({ path: "phone",        operator: FilterOperator.Contains, value1: sQuery, caseSensitive: false })
-                ];
-                oBinding.filter(new Filter(aFilters, false));
-            } else {
-                oBinding.filter([]);
-            }
+        // ── PANEL TOGGLE ─────────────────────────────────────────────
+        onCreate: function () {
+            var m = this.getView().getModel();
+            m.setProperty("/cm_showOp", false);
+            m.setProperty("/cm_showCreate", true);
+            m.setProperty("/cm_showRead", false);
+            m.setProperty("/cm_showUpdate", false);
+            m.setProperty("/cm_showDelete", false);
+            m.setProperty("/cm_createPayload", { kunnr: "", name1: "", orto1: "", adrnr: "", phone: "" });
+        },
+
+        onRead: function () {
+            var m = this.getView().getModel();
+            m.setProperty("/cm_showOp", false);
+            m.setProperty("/cm_showCreate", false);
+            m.setProperty("/cm_showRead", true);
+            m.setProperty("/cm_showUpdate", false);
+            m.setProperty("/cm_showDelete", false);
+            m.setProperty("/cm_searchQuery", "");
+            // Load all customers by default
+            fetch(BASE)
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    m.setProperty("/cm_customers", d.value || []);
+                    m.setProperty("/cm_showReadResult", true);
+                })
+                .catch(function () { MessageBox.error("Unable to fetch customers"); });
+        },
+
+        onUpdate: function () {
+            var m = this.getView().getModel();
+            m.setProperty("/cm_showOp", false);
+            m.setProperty("/cm_showCreate", false);
+            m.setProperty("/cm_showRead", false);
+            m.setProperty("/cm_showUpdate", true);
+            m.setProperty("/cm_showDelete", false);
+            m.setProperty("/cm_editMode", false);
+            m.setProperty("/cm_searchKunnr", "");
+        },
+
+        onDelete: function () {
+            var m = this.getView().getModel();
+            m.setProperty("/cm_showOp", false);
+            m.setProperty("/cm_showCreate", false);
+            m.setProperty("/cm_showRead", false);
+            m.setProperty("/cm_showUpdate", false);
+            m.setProperty("/cm_showDelete", true);
+            m.setProperty("/cm_showDeleteResult", false);
+            m.setProperty("/cm_deleteKunnr", "");
+        },
+
+        onBack: function () {
+            var m = this.getView().getModel();
+            m.setProperty("/cm_showOp", true);
+            m.setProperty("/cm_showCreate", false);
+            m.setProperty("/cm_showRead", false);
+            m.setProperty("/cm_showUpdate", false);
+            m.setProperty("/cm_showDelete", false);
+            m.setProperty("/cm_showReadResult", false);
+            m.setProperty("/cm_showDeleteResult", false);
+            m.setProperty("/cm_editMode", false);
         },
 
         // ── CREATE ───────────────────────────────────────────────────
-        onCreatePress: function () {
-            var that = this;
-            var oModel = this.getView().getModel("customer");
-            var oListBinding = oModel.bindList("/Customers");
-            oListBinding.requestContexts().then(function (aCtx) {
-                var iMax = 0;
-                aCtx.forEach(function (c) { var id = c.getProperty("CustomerID"); if (id > iMax) iMax = id; });
-                that._openCreateDialog(iMax + 1);
-            }).catch(function () { that._openCreateDialog(1); });
+        onSave: function () {
+            var m = this.getView().getModel();
+            var p = m.getProperty("/cm_createPayload");
+
+            if (!p.kunnr || !p.kunnr.trim()) { MessageBox.warning("Customer ID (kunnr) required"); return; }
+            if (!p.name1 || !p.name1.trim()) { MessageBox.warning("Customer Name (name1) required"); return; }
+            if (!p.orto1 || !p.orto1.trim()) { MessageBox.warning("City (orto1) required"); return; }
+            if (!p.adrnr || !p.adrnr.trim()) { MessageBox.warning("Address No (adrnr) required"); return; }
+            if (!p.phone || !p.phone.trim()) { MessageBox.warning("Phone required"); return; }
+
+            var body = {
+                kunnr: p.kunnr.trim(),
+                name1: this._capitalize(p.name1.trim()),
+                orto1: this._capitalize(p.orto1.trim()),
+                adrnr: p.adrnr.trim(),
+                phone: p.phone.trim()
+            };
+
+            fetch(BASE, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body)
+            })
+            .then(function (r) {
+                if (r.ok || r.status === 201) {
+                    MessageToast.show("Customer Created Successfully");
+                    m.setProperty("/cm_createPayload", { kunnr: "", name1: "", orto1: "", adrnr: "", phone: "" });
+                } else {
+                    return r.json().then(function (e) {
+                        MessageBox.error((e.error && e.error.message) || "Creation Failed");
+                    });
+                }
+            })
+            .catch(function () { MessageBox.error("Network Error"); });
         },
 
-        _openCreateDialog: function (nextId) {
-            var that = this;
-            var oIdIn    = new Input({ value: String(nextId), type: "Number" });
-            var oNameIn  = new Input({ placeholder: "Customer Name", liveChange: function (e) { var v = e.getSource().getValue(); var c = that._capitalize(v); if (v !== c) e.getSource().setValue(c); } });
-            var oCityIn  = new Input({ placeholder: "City",          liveChange: function (e) { var v = e.getSource().getValue(); var c = that._capitalize(v); if (v !== c) e.getSource().setValue(c); } });
-            var oAddrIn  = new Input({ placeholder: "Address Number",liveChange: function (e) { var v = e.getSource().getValue(); var c = that._capitalize(v); if (v !== c) e.getSource().setValue(c); } });
-            var oPhoneIn = new Input({ placeholder: "10 digits", type: "Tel", maxLength: 10,
-                liveChange: function (e) { var v = e.getSource().getValue(); var s = v.replace(/\D/g, "").substring(0, 10); if (v !== s) e.getSource().setValue(s); }
-            });
-            var oDialog = new Dialog({
-                title: "Create New Customer",
-                content: [new VBox({ items: [
-                    new Label({ text: "Customer ID", required: true }), oIdIn,
-                    new Label({ text: "Customer Name", required: true }), oNameIn,
-                    new Label({ text: "City", required: true }), oCityIn,
-                    new Label({ text: "Address Number", required: true }), oAddrIn,
-                    new Label({ text: "Phone Number (10 digits)", required: true }), oPhoneIn
-                ]}).addStyleClass("sapUiSmallMargin")],
-                beginButton: new Button({ text: "Save", type: "Emphasized", press: function () {
-                    if (oPhoneIn.getValue().length !== 10) { MessageToast.show("Phone must be 10 digits"); return; }
-                    var oData = {
-                        CustomerID: parseInt(oIdIn.getValue()),
-                        customerName: that._capitalize(oNameIn.getValue()),
-                        city: that._capitalize(oCityIn.getValue()),
-                        addressNo: that._capitalize(oAddrIn.getValue()),
-                        phone: oPhoneIn.getValue()
-                    };
-                    if (!oData.CustomerID || !oData.customerName || !oData.city || !oData.addressNo || !oData.phone) {
-                        MessageToast.show("Fill all fields"); return;
-                    }
-                    var oListBinding = that.getView().getModel("customer").bindList("/Customers");
-                    oListBinding.create(oData).created()
-                        .then(function () { MessageToast.show("Customer created!"); })
-                        .catch(function (e) { MessageToast.show("Error: " + e.message); });
-                    oDialog.close(); oDialog.destroy();
-                }}),
-                endButton: new Button({ text: "Cancel", press: function () { oDialog.close(); oDialog.destroy(); } })
-            });
-            this.getView().addDependent(oDialog);
-            oDialog.open();
+        // ── READ / SEARCH ─────────────────────────────────────────────
+        onSearchCustomer: function () {
+            var m = this.getView().getModel();
+            var q = m.getProperty("/cm_searchQuery");
+            var url = BASE;
+            if (q && q.trim()) {
+                // Search by name1, orto1, or phone using contains
+                url = BASE + "?$filter=contains(name1,'" + q.trim() +
+                    "') or contains(orto1,'" + q.trim() +
+                    "') or contains(phone,'" + q.trim() + "')";
+            }
+            fetch(url)
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    m.setProperty("/cm_customers", d.value || []);
+                    m.setProperty("/cm_showReadResult", true);
+                })
+                .catch(function () { MessageBox.error("Search failed"); });
         },
 
-        // ── VIEW ─────────────────────────────────────────────────────
-        onViewPress: function () {
-            var that = this;
-            var oViewIn = new Input({ placeholder: "Customer ID (empty = all)", type: "Number" });
-            var oDialog = new Dialog({
-                title: "View Customer",
-                content: [new VBox({ items: [new Label({ text: "Customer ID (optional)" }), oViewIn] }).addStyleClass("sapUiSmallMargin")],
-                beginButton: new Button({ text: "View", type: "Emphasized", press: function () {
-                    var sId = oViewIn.getValue().trim();
-                    var oTable = that.byId("customerTable");
-                    var oBinding = oTable.getBinding("rows");
-                    if (sId) {
-                        oBinding.filter([new Filter("CustomerID", FilterOperator.EQ, parseInt(sId))]);
-                        MessageToast.show("Showing customer: " + sId);
-                    } else {
-                        oBinding.filter([]);
-                        MessageToast.show("Showing all customers");
-                    }
-                    oDialog.close(); oDialog.destroy();
-                }}),
-                endButton: new Button({ text: "Cancel", press: function () { oDialog.close(); oDialog.destroy(); } })
-            });
-            this.getView().addDependent(oDialog);
-            oDialog.open();
+        onShowAll: function () {
+            var m = this.getView().getModel();
+            m.setProperty("/cm_searchQuery", "");
+            fetch(BASE)
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    m.setProperty("/cm_customers", d.value || []);
+                    m.setProperty("/cm_showReadResult", true);
+                })
+                .catch(function () { MessageBox.error("Fetch failed"); });
         },
 
-        // ── EDIT ─────────────────────────────────────────────────────
-        onEditPress: function () {
-            var that = this;
-            var oTable = this.byId("customerTable");
-            var aIdx = oTable.getSelectedIndices();
-            if (!aIdx.length) { MessageBox.warning("Select a customer to edit"); return; }
-            if (aIdx.length > 1) { MessageBox.warning("Select only one customer"); return; }
-            var oCtx = oTable.getBinding("rows").getContexts()[aIdx[0]];
-            var oData = oCtx.getObject();
-            var oCityIn  = new Input({ value: oData.city,      placeholder: "City" });
-            var oAddrIn  = new Input({ value: oData.addressNo, placeholder: "Address" });
-            var oPhoneIn = new Input({ value: oData.phone,     placeholder: "10 digits", type: "Tel", maxLength: 10 });
-            var oDialog = new Dialog({
-                title: "Edit Customer",
-                content: [new VBox({ items: [
-                    new Label({ text: "Customer ID (read only)" }), new Input({ value: String(oData.CustomerID), enabled: false }),
-                    new Label({ text: "Name (read only)" }),        new Input({ value: oData.customerName, enabled: false }),
-                    new Label({ text: "City", required: true }),    oCityIn,
-                    new Label({ text: "Address", required: true }), oAddrIn,
-                    new Label({ text: "Phone", required: true }),   oPhoneIn
-                ]}).addStyleClass("sapUiSmallMargin")],
-                beginButton: new Button({ text: "Update", type: "Emphasized", press: function () {
-                    if (oPhoneIn.getValue().length !== 10) { MessageToast.show("Phone must be 10 digits"); return; }
-                    oCtx.setProperty("city",      that._capitalize(oCityIn.getValue()));
-                    oCtx.setProperty("addressNo", that._capitalize(oAddrIn.getValue()));
-                    oCtx.setProperty("phone",     oPhoneIn.getValue());
-                    oCtx.getModel().submitBatch("$auto")
-                        .then(function () { MessageToast.show("Customer updated!"); })
-                        .catch(function (e) { MessageToast.show("Error: " + e.message); });
-                    oDialog.close(); oDialog.destroy();
-                    oTable.clearSelection();
-                }}),
-                endButton: new Button({ text: "Cancel", press: function () { oDialog.close(); oDialog.destroy(); } })
-            });
-            this.getView().addDependent(oDialog);
-            oDialog.open();
+        // ── UPDATE LOAD ───────────────────────────────────────────────
+        onEditCustomer: function () {
+            var m = this.getView().getModel();
+            var kunnr = m.getProperty("/cm_searchKunnr");
+            if (!kunnr || !kunnr.trim()) { MessageBox.warning("Enter Customer ID"); return; }
+
+            fetch(BASE + "('" + kunnr.trim() + "')")
+                .then(function (r) {
+                    if (r.status === 404) throw new Error("Customer not found");
+                    if (!r.ok) throw new Error("Error " + r.status);
+                    return r.json();
+                })
+                .then(function (d) {
+                    m.setProperty("/cm_editPayload", d);
+                    m.setProperty("/cm_editMode", true);
+                })
+                .catch(function (e) { MessageBox.error(e.message || "Not found"); });
         },
 
-        // ── DELETE ───────────────────────────────────────────────────
-        onDeletePress: function () {
-            var oTable = this.byId("customerTable");
-            var aIdx = oTable.getSelectedIndices();
-            if (!aIdx.length) { MessageBox.warning("Select at least one customer"); return; }
-            MessageBox.confirm("Delete " + aIdx.length + " customer(s)?", {
-                onClose: function (sAction) {
-                    if (sAction === MessageBox.Action.OK) {
-                        var oBinding = oTable.getBinding("rows");
-                        aIdx.reverse().forEach(function (i) {
-                            var oCtx = oBinding.getContexts()[i];
-                            if (oCtx) oCtx.delete();
-                        });
-                        oTable.clearSelection();
-                        MessageToast.show("Customer(s) deleted!");
+        // ── UPDATE SAVE ───────────────────────────────────────────────
+        onUpdateCustomer: function () {
+            var m = this.getView().getModel();
+            var p = m.getProperty("/cm_editPayload");
+            if (!p.kunnr) { MessageBox.warning("Customer ID missing"); return; }
+
+            var body = {
+                orto1: this._capitalize(p.orto1 || ""),
+                adrnr: p.adrnr || "",
+                phone: p.phone || ""
+            };
+
+            fetch(BASE + "('" + p.kunnr + "')", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body)
+            })
+            .then(function (r) {
+                if (r.ok || r.status === 204) {
+                    MessageToast.show("Customer Updated Successfully");
+                    m.setProperty("/cm_editMode", false);
+                    m.setProperty("/cm_searchKunnr", "");
+                } else {
+                    MessageBox.error("Update Failed");
+                }
+            })
+            .catch(function () { MessageBox.error("Network Error"); });
+        },
+
+        onCancelEdit: function () {
+            this.getView().getModel().setProperty("/cm_editMode", false);
+        },
+
+        // ── DELETE SEARCH ─────────────────────────────────────────────
+        onDeleteSearch: function () {
+            var m = this.getView().getModel();
+            var kunnr = m.getProperty("/cm_deleteKunnr");
+            var url = kunnr && kunnr.trim()
+                ? BASE + "?$filter=contains(kunnr,'" + kunnr.trim() + "')"
+                : BASE;
+
+            fetch(url)
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    m.setProperty("/cm_customers", d.value || []);
+                    m.setProperty("/cm_showDeleteResult", true);
+                })
+                .catch(function () { MessageBox.error("Search failed"); });
+        },
+
+        // ── DELETE ────────────────────────────────────────────────────
+        onDeleteSelected: function () {
+            var table = this.byId("cmDeleteTable");
+            var indices = table.getSelectedIndices();
+            if (!indices.length) { MessageBox.warning("Select rows first"); return; }
+
+            var model = this.getView().getModel();
+            var rows = model.getProperty("/cm_customers");
+
+            MessageBox.confirm("Delete " + indices.length + " customer(s)?", {
+                onClose: function (action) {
+                    if (action === MessageBox.Action.OK) {
+                        Promise.all(indices.map(function (i) {
+                            return fetch(BASE + "('" + rows[i].kunnr + "')", { method: "DELETE" });
+                        }))
+                        .then(function () {
+                            MessageToast.show("Deleted Successfully");
+                            model.setProperty("/cm_showDeleteResult", false);
+                            model.setProperty("/cm_customers", []);
+                            model.setProperty("/cm_deleteKunnr", "");
+                        })
+                        .catch(function () { MessageBox.error("Delete failed"); });
                     }
                 }.bind(this)
             });

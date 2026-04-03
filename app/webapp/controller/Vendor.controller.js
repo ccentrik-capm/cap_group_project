@@ -10,7 +10,7 @@ sap.ui.define([
 ], function (Controller, MessageToast, MessageBox, Input, Label, VBox, Text, Title) {
     "use strict";
 
-    var BASE = "/odata/v4/vendor/Vendors";
+    var BASE = "/vendor/VendorMaster";
 
     return Controller.extend("unified.controller.Vendor", {
 

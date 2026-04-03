@@ -89,7 +89,7 @@
 <Label text="VBELN — Sales Order No"/>
 <HBox>
 <Input value="{/so_searchVBELN}" placeholder="Enter VBELN"/>
-<Button text="Search & Load" icon="sap-icon://search" press="onEditSalesOrder" class="sapUiSmallMarginBegin"/>
+<Button text="Search &amp; Load" icon="sap-icon://search" press="onEditSalesOrder" class="sapUiSmallMarginBegin"/>
 </HBox>
 </f:content>
 </f:SimpleForm>

@@ -1,52 +1,131 @@
+<mvc:View
+    controllerName="unified.controller.Customer"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:t="sap.ui.table"
+    xmlns:f="sap.ui.layout.form"
+    displayBlock="true">
 
-<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:t="sap.ui.table" controllerName="unified.controller.Customer" displayBlock="true">
 <Page title="Customer Master" showNavButton="true" navButtonPress="onNavHome">
-<headerContent>
-<Button text="Create" type="Emphasized" icon="sap-icon://add" press="onCreatePress"/>
-<Button text="View" type="Default" icon="sap-icon://eye" press="onViewPress"/>
-<Button text="Edit" type="Default" icon="sap-icon://edit" press="onEditPress"/>
-<Button text="Delete" type="Reject" icon="sap-icon://delete" press="onDeletePress"/>
-</headerContent>
 <content>
-<Toolbar>
-<Title text="Customer List"/>
-<ToolbarSpacer/>
-<SearchField id="cmSearchField" placeholder="Search by name, city or phone..." search="onSearch" liveChange="onSearch" width="300px"/>
-</Toolbar>
-<t:Table id="customerTable" rows="{customer>/Customers}" selectionMode="MultiToggle" visibleRowCount="10" alternateRowColors="true" class="sapUiMediumMarginTop">
-<t:columns>
-<t:Column width="100px">
-<Label text="Customer ID"/>
-<t:template>
-<Text text="{customer>CustomerID}"/>
-</t:template>
-</t:Column>
-<t:Column width="200px">
-<Label text="Customer Name"/>
-<t:template>
-<Text text="{customer>customerName}"/>
-</t:template>
-</t:Column>
-<t:Column width="150px">
-<Label text="City"/>
-<t:template>
-<Text text="{customer>city}"/>
-</t:template>
-</t:Column>
-<t:Column width="150px">
-<Label text="Address No."/>
-<t:template>
-<Text text="{customer>addressNo}"/>
-</t:template>
-</t:Column>
-<t:Column width="150px">
-<Label text="Phone"/>
-<t:template>
-<Text text="{customer>phone}"/>
-</t:template>
-</t:Column>
-</t:columns>
-</t:Table>
+
+<!-- ── OPERATION SELECTOR ── -->
+<Panel headerText="Select Operation" visible="{/cm_showOp}" class="sapUiLargeMargin">
+    <VBox alignItems="Center" class="sapUiMediumMarginTop sapUiMediumMarginBottom">
+        <HBox justifyContent="Center">
+            <Button text="Create" type="Accept"     icon="sap-icon://add"    press="onCreate" width="160px" class="sapUiSmallMargin"/>
+            <Button text="Read"   type="Emphasized" icon="sap-icon://search" press="onRead"   width="160px" class="sapUiSmallMargin"/>
+            <Button text="Update" type="Default"    icon="sap-icon://edit"   press="onUpdate" width="160px" class="sapUiSmallMargin"/>
+            <Button text="Delete" type="Reject"     icon="sap-icon://delete" press="onDelete" width="160px" class="sapUiSmallMargin"/>
+        </HBox>
+    </VBox>
+</Panel>
+
+<!-- ── CREATE ── -->
+<Panel headerText="Create Customer" visible="{/cm_showCreate}" class="sapUiLargeMargin">
+    <Toolbar><Button text="Back" icon="sap-icon://nav-back" press="onBack"/></Toolbar>
+    <f:SimpleForm editable="true" layout="ResponsiveGridLayout" columnsL="2" columnsM="1">
+        <f:content>
+            <Label text="Customer ID (kunnr)" required="true"/>
+            <Input value="{/cm_createPayload/kunnr}" placeholder="e.g. C001" maxLength="10"/>
+            <Label text="Customer Name (name1)" required="true"/>
+            <Input value="{/cm_createPayload/name1}" placeholder="e.g. Rahul Sharma"/>
+            <Label text="City (orto1)" required="true"/>
+            <Input value="{/cm_createPayload/orto1}" placeholder="e.g. Mumbai"/>
+            <Label text="Address No (adrnr)" required="true"/>
+            <Input value="{/cm_createPayload/adrnr}" placeholder="e.g. A001" maxLength="10"/>
+            <Label text="Phone (phone)" required="true"/>
+            <Input value="{/cm_createPayload/phone}" placeholder="e.g. 9876543210" maxLength="15" type="Tel"/>
+        </f:content>
+    </f:SimpleForm>
+    <Toolbar>
+        <Button text="Save" type="Accept" icon="sap-icon://save" press="onSave"/>
+    </Toolbar>
+</Panel>
+
+<!-- ── READ ── -->
+<Panel headerText="View Customers" visible="{/cm_showRead}" class="sapUiLargeMargin">
+    <Toolbar><Button text="Back" icon="sap-icon://nav-back" press="onBack"/></Toolbar>
+    <f:SimpleForm layout="ResponsiveGridLayout">
+        <f:content>
+            <Label text="Search"/>
+            <HBox>
+                <Input value="{/cm_searchQuery}" placeholder="Enter name, city or phone"/>
+                <Button icon="sap-icon://search" text="Search" press="onSearchCustomer" class="sapUiSmallMarginBegin"/>
+                <Button icon="sap-icon://clear-filter" text="Show All" press="onShowAll" class="sapUiSmallMarginBegin"/>
+            </HBox>
+        </f:content>
+    </f:SimpleForm>
+    <Panel headerText="Customers" visible="{/cm_showReadResult}">
+        <t:Table id="cmReadTable" rows="{/cm_customers}" visibleRowCount="8" selectionMode="None">
+            <t:columns>
+                <t:Column width="120px"><Label text="Customer ID"/><t:template><Text text="{kunnr}"/></t:template></t:Column>
+                <t:Column width="200px"><Label text="Name"/><t:template><Text text="{name1}"/></t:template></t:Column>
+                <t:Column width="150px"><Label text="City"/><t:template><Text text="{orto1}"/></t:template></t:Column>
+                <t:Column width="120px"><Label text="Address No"/><t:template><Text text="{adrnr}"/></t:template></t:Column>
+                <t:Column width="150px"><Label text="Phone"/><t:template><Text text="{phone}"/></t:template></t:Column>
+            </t:columns>
+        </t:Table>
+    </Panel>
+</Panel>
+
+<!-- ── UPDATE ── -->
+<Panel headerText="Update Customer" visible="{/cm_showUpdate}" class="sapUiLargeMargin">
+    <Toolbar><Button text="Back" icon="sap-icon://nav-back" press="onBack"/></Toolbar>
+    <f:SimpleForm layout="ResponsiveGridLayout">
+        <f:content>
+            <Label text="Customer ID (kunnr)"/>
+            <HBox>
+                <Input value="{/cm_searchKunnr}" placeholder="Enter Customer ID"/>
+                <Button text="Search &amp; Load" icon="sap-icon://search" press="onEditCustomer" class="sapUiSmallMarginBegin"/>
+            </HBox>
+        </f:content>
+    </f:SimpleForm>
+    <Panel visible="{/cm_editMode}" headerText="Edit Customer">
+        <f:SimpleForm layout="ResponsiveGridLayout" columnsL="2" columnsM="1">
+            <f:content>
+                <Label text="Customer ID"/><Text text="{/cm_editPayload/kunnr}"/>
+                <Label text="Customer Name"/><Text text="{/cm_editPayload/name1}"/>
+                <Label text="City" required="true"/>   <Input value="{/cm_editPayload/orto1}"/>
+                <Label text="Address No" required="true"/><Input value="{/cm_editPayload/adrnr}"/>
+                <Label text="Phone" required="true"/>  <Input value="{/cm_editPayload/phone}" maxLength="15" type="Tel"/>
+            </f:content>
+        </f:SimpleForm>
+        <Toolbar>
+            <Button text="Update" type="Accept" icon="sap-icon://save"   press="onUpdateCustomer"/>
+            <Button text="Cancel" type="Reject" icon="sap-icon://cancel" press="onCancelEdit"/>
+        </Toolbar>
+    </Panel>
+</Panel>
+
+<!-- ── DELETE ── -->
+<Panel headerText="Delete Customer" visible="{/cm_showDelete}" class="sapUiLargeMargin">
+    <Toolbar><Button text="Back" icon="sap-icon://nav-back" press="onBack"/></Toolbar>
+    <f:SimpleForm>
+        <f:content>
+            <Label text="Customer ID (kunnr)"/>
+            <HBox>
+                <Input value="{/cm_deleteKunnr}" placeholder="Enter Customer ID"/>
+                <Button text="Search" icon="sap-icon://search" press="onDeleteSearch" class="sapUiSmallMarginBegin"/>
+            </HBox>
+        </f:content>
+    </f:SimpleForm>
+    <Panel visible="{/cm_showDeleteResult}" headerText="Customers">
+        <t:Table id="cmDeleteTable" rows="{/cm_customers}" selectionMode="MultiToggle" visibleRowCount="5">
+            <t:columns>
+                <t:Column width="120px"><Label text="Customer ID"/><t:template><Text text="{kunnr}"/></t:template></t:Column>
+                <t:Column width="200px"><Label text="Name"/><t:template><Text text="{name1}"/></t:template></t:Column>
+                <t:Column width="150px"><Label text="City"/><t:template><Text text="{orto1}"/></t:template></t:Column>
+                <t:Column width="120px"><Label text="Address No"/><t:template><Text text="{adrnr}"/></t:template></t:Column>
+                <t:Column width="150px"><Label text="Phone"/><t:template><Text text="{phone}"/></t:template></t:Column>
+            </t:columns>
+        </t:Table>
+        <Toolbar>
+            <Button text="Delete Selected" type="Reject" icon="sap-icon://delete" press="onDeleteSelected"/>
+        </Toolbar>
+    </Panel>
+</Panel>
+
 </content>
 </Page>
 </mvc:View>

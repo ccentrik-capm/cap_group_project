@@ -1,225 +1,158 @@
+<mvc:View
+    controllerName="unified.controller.Purchase"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:t="sap.ui.table"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core"
+    displayBlock="true">
 
-<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:t="sap.ui.table" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" controllerName="unified.controller.Purchase" displayBlock="true">
 <Page title="Purchase Order Management" showNavButton="true" navButtonPress="onNavHome">
 <content>
-<!--  ── OPERATION SELECTOR ──  -->
+
+<!-- ── OPERATION SELECTOR ── -->
 <Panel headerText="Select Operation" visible="{/po_showOp}" class="sapUiLargeMargin">
-<VBox alignItems="Center" class="sapUiMediumMarginTop sapUiMediumMarginBottom">
-<HBox justifyContent="Center">
-<Button text="Create" type="Accept" icon="sap-icon://add" press="onSelectCreate" width="160px" class="sapUiSmallMargin"/>
-<Button text="Read" type="Emphasized" icon="sap-icon://search" press="onSelectRead" width="160px" class="sapUiSmallMargin"/>
-<Button text="Update Item" type="Default" icon="sap-icon://edit" press="onSelectUpdate" width="160px" class="sapUiSmallMargin"/>
-</HBox>
-</VBox>
+    <VBox alignItems="Center" class="sapUiMediumMarginTop sapUiMediumMarginBottom">
+        <HBox justifyContent="Center">
+            <Button text="Create"      type="Accept"     icon="sap-icon://add"    press="onSelectCreate" width="160px" class="sapUiSmallMargin"/>
+            <Button text="Read"        type="Emphasized" icon="sap-icon://search" press="onSelectRead"   width="160px" class="sapUiSmallMargin"/>
+            <Button text="Update Item" type="Default"    icon="sap-icon://edit"   press="onSelectUpdate" width="160px" class="sapUiSmallMargin"/>
+        </HBox>
+    </VBox>
 </Panel>
-<!--  ── CREATE ──  -->
+
+<!-- ── CREATE ── -->
 <Panel headerText="Create Purchase Order" visible="{/po_showCreate}" class="sapUiLargeMargin">
-<Toolbar>
-<Button text="Back" icon="sap-icon://nav-back" press="onBack"/>
-</Toolbar>
-<f:SimpleForm editable="true" layout="ResponsiveGridLayout" columnsL="2" columnsM="1">
-<f:content>
-<core:Title text="PO Header"/>
-<Label text="Company Code"/>
-<Input value="{/po_createPayload/BUKRS}"/>
-<Label text="PO Type"/>
-<Input value="{/po_createPayload/BSART}"/>
-<Label text="Vendor"/>
-<HBox>
-<Input value="{/po_createPayload/LIFNR}" width="200px"/>
-<Button icon="sap-icon://value-help" press="onVendorF4Help"/>
-</HBox>
-<Label text="Order Date"/>
-<DatePicker value="{/po_createPayload/AEDAT}" valueFormat="yyyy-MM-dd"/>
-<Label text="Payment Terms"/>
-<Input value="{/po_createPayload/ZTERM}"/>
-<Label text="Currency"/>
-<Input value="{/po_createPayload/currency}"/>
-</f:content>
-</f:SimpleForm>
-<Panel headerText="PO Items" class="sapUiSmallMargin">
-<t:Table id="poItemTable" rows="{/po_createPayload/items}" visibleRowCount="3">
-<t:columns>
-<t:Column>
-<Label text="Material"/>
-<t:template>
-<Input value="{MATNR}"/>
-</t:template>
-</t:Column>
-<t:Column>
-<Label text="Quantity"/>
-<t:template>
-<Input value="{MENGE}" type="Number"/>
-</t:template>
-</t:Column>
-<t:Column>
-<Label text="UOM"/>
-<t:template>
-<Input value="{MEINS}"/>
-</t:template>
-</t:Column>
-<t:Column>
-<Label text="Plant"/>
-<t:template>
-<Input value="{WERKS}"/>
-</t:template>
-</t:Column>
-<t:Column>
-<Label text="Price"/>
-<t:template>
-<Input value="{NETPR}" type="Number"/>
-</t:template>
-</t:Column>
-</t:columns>
-</t:Table>
-<Button text="Add Row" icon="sap-icon://add" press="onAddItem" class="sapUiSmallMargin"/>
+    <Toolbar><Button text="Back" icon="sap-icon://nav-back" press="onBack"/></Toolbar>
+
+    <f:SimpleForm editable="true" layout="ResponsiveGridLayout" columnsL="2" columnsM="1">
+        <f:content>
+            <core:Title text="PO Header"/>
+            <Label text="PO Number (EBELN)" required="true"/>
+            <Input value="{/po_createPayload/EBELN}" placeholder="e.g. PO001"/>
+            <Label text="Company Code (BUKRS)"/>
+            <Input value="{/po_createPayload/BUKRS}" placeholder="e.g. 1000"/>
+            <Label text="PO Type (BSART)"/>
+            <Input value="{/po_createPayload/BSART}" placeholder="e.g. NB"/>
+            <Label text="Vendor (LIFNR)"/>
+            <HBox>
+                <Input value="{/po_createPayload/LIFNR}" width="200px" placeholder="Vendor ID"/>
+                <Button icon="sap-icon://value-help" press="onVendorF4Help"/>
+            </HBox>
+            <Label text="Order Date (AEDAT)"/>
+            <DatePicker value="{/po_createPayload/AEDAT}" valueFormat="yyyy-MM-dd"/>
+            <Label text="Payment Terms (ZTERM)"/>
+            <Input value="{/po_createPayload/ZTERM}" placeholder="e.g. NT30"/>
+            <Label text="Currency"/>
+            <Input value="{/po_createPayload/currency}" placeholder="e.g. INR"/>
+        </f:content>
+    </f:SimpleForm>
+
+    <Panel headerText="PO Line Items" class="sapUiSmallMargin">
+        <t:Table id="poItemTable" rows="{/po_createPayload/items}" visibleRowCount="3">
+            <t:columns>
+                <t:Column width="60px"> <Label text="Item No"/> <t:template><Text text="{EBELP}"/></t:template></t:Column>
+                <t:Column><Label text="Material (MATNR)"/> <t:template><Input value="{MATNR}" placeholder="MAT001"/></t:template></t:Column>
+                <t:Column><Label text="Quantity (MENGE)"/> <t:template><Input value="{MENGE}" type="Number"/></t:template></t:Column>
+                <t:Column><Label text="UOM (MEINS)"/>      <t:template><Input value="{MEINS}" placeholder="EA"/></t:template></t:Column>
+                <t:Column><Label text="Plant (WERKS)"/>    <t:template><Input value="{WERKS}" placeholder="1000"/></t:template></t:Column>
+                <t:Column><Label text="Price (NETPR)"/>    <t:template><Input value="{NETPR}" type="Number"/></t:template></t:Column>
+            </t:columns>
+        </t:Table>
+        <Button text="+ Add Row" icon="sap-icon://add" press="onAddItem" class="sapUiSmallMargin"/>
+    </Panel>
+
+    <Toolbar>
+        <Button text="Save PO" type="Accept" icon="sap-icon://save" press="onSaveCombined"/>
+        <Button text="Back" press="onBack"/>
+    </Toolbar>
 </Panel>
-<Toolbar>
-<Button text="Save PO" type="Accept" icon="sap-icon://save" press="onSaveCombined"/>
-<Button text="Back" press="onBack"/>
-</Toolbar>
-</Panel>
-<!--  ── READ ──  -->
+
+<!-- ── READ ── -->
 <Panel headerText="View Purchase Orders" visible="{/po_showRead}" class="sapUiLargeMargin">
-<Toolbar>
-<Button text="Back" icon="sap-icon://nav-back" press="onBack"/>
-</Toolbar>
-<t:Table id="poReadTable" rows="{/po_POHeader}" selectionMode="Single" visibleRowCount="5" rowSelectionChange="onPORowSelect">
-<t:columns>
-<t:Column>
-<Label text="PO Number"/>
-<t:template>
-<Text text="{EBELN}"/>
-</t:template>
-</t:Column>
-<t:Column>
-<Label text="Date"/>
-<t:template>
-<Text text="{AEDAT}"/>
-</t:template>
-</t:Column>
-<t:Column>
-<Label text="Vendor"/>
-<t:template>
-<Text text="{LIFNR}"/>
-</t:template>
-</t:Column>
-<t:Column>
-<Label text="Company"/>
-<t:template>
-<Text text="{BUKRS}"/>
-</t:template>
-</t:Column>
-<t:Column>
-<Label text="Status"/>
-<t:template>
-<Text text="{STATU}"/>
-</t:template>
-</t:Column>
-</t:columns>
-</t:Table>
+    <Toolbar><Button text="Back" icon="sap-icon://nav-back" press="onBack"/></Toolbar>
+    <t:Table
+        id="poReadTable"
+        rows="{/po_POHeader}"
+        selectionMode="Single"
+        visibleRowCount="6"
+        rowSelectionChange="onPORowSelect">
+        <t:columns>
+            <t:Column><Label text="PO Number"/>  <t:template><Text text="{EBELN}"/></t:template></t:Column>
+            <t:Column><Label text="Date"/>        <t:template><Text text="{AEDAT}"/></t:template></t:Column>
+            <t:Column><Label text="Vendor"/>      <t:template><Text text="{LIFNR}"/></t:template></t:Column>
+            <t:Column><Label text="Company"/>     <t:template><Text text="{BUKRS}"/></t:template></t:Column>
+            <t:Column><Label text="Currency"/>    <t:template><Text text="{currency}"/></t:template></t:Column>
+            <t:Column><Label text="Status"/>      <t:template><Text text="{STATU}"/></t:template></t:Column>
+        </t:columns>
+    </t:Table>
+    <Text text="Click a row to see details and line items" class="sapUiSmallMargin"/>
 </Panel>
-<!--  ── DETAIL ──  -->
+
+<!-- ── DETAIL (row click from Read) ── -->
 <Panel headerText="Purchase Order Detail" visible="{/po_showDetail}" class="sapUiLargeMargin">
-<f:SimpleForm editable="false" layout="ResponsiveGridLayout" columnsL="2" columnsM="1">
-<f:content>
-<core:Title text="PO Header"/>
-<Label text="PO Number"/>
-<Text text="{/po_selectedPO/EBELN}"/>
-<Label text="Company Code"/>
-<Text text="{/po_selectedPO/BUKRS}"/>
-<Label text="PO Type"/>
-<Text text="{/po_selectedPO/BSART}"/>
-<Label text="Vendor"/>
-<Text text="{/po_selectedPO/LIFNR}"/>
-<Label text="Order Date"/>
-<Text text="{/po_selectedPO/AEDAT}"/>
-<Label text="Pay Terms"/>
-<Text text="{/po_selectedPO/ZTERM}"/>
-<Label text="Currency"/>
-<Text text="{/po_selectedPO/currency}"/>
-<Label text="Status"/>
-<Text text="{/po_selectedPO/STATU}"/>
-</f:content>
-</f:SimpleForm>
-<Button text="Delete PO" type="Reject" icon="sap-icon://delete" press="onDeletePO" class="sapUiSmallMargin"/>
-<t:Table id="poDetailItemTable" rows="{/po_selectedPOItems}" visibleRowCount="5">
-<t:columns>
-<t:Column>
-<Label text="Item"/>
-<t:template>
-<Text text="{EBELP}"/>
-</t:template>
-</t:Column>
-<t:Column>
-<Label text="Material"/>
-<t:template>
-<Text text="{MATNR}"/>
-</t:template>
-</t:Column>
-<t:Column>
-<Label text="Quantity"/>
-<t:template>
-<Input value="{MENGE}" type="Number"/>
-</t:template>
-</t:Column>
-<t:Column>
-<Label text="UOM"/>
-<t:template>
-<Text text="{MEINS}"/>
-</t:template>
-</t:Column>
-<t:Column>
-<Label text="Plant"/>
-<t:template>
-<Text text="{WERKS}"/>
-</t:template>
-</t:Column>
-<t:Column>
-<Label text="Price"/>
-<t:template>
-<Text text="{NETPR}"/>
-</t:template>
-</t:Column>
-<t:Column>
-<Label text="Action"/>
-<t:template>
-<Button text="Update" press="onUpdateItemInline"/>
-</t:template>
-</t:Column>
-</t:columns>
-</t:Table>
-<Toolbar>
-<Button text="Back" icon="sap-icon://nav-back" press="onBackFromDetail"/>
-</Toolbar>
+    <f:SimpleForm editable="false" layout="ResponsiveGridLayout" columnsL="2" columnsM="1">
+        <f:content>
+            <core:Title text="PO Header"/>
+            <Label text="PO Number"/>    <Text text="{/po_selectedPO/EBELN}"/>
+            <Label text="Company Code"/> <Text text="{/po_selectedPO/BUKRS}"/>
+            <Label text="PO Type"/>      <Text text="{/po_selectedPO/BSART}"/>
+            <Label text="Vendor"/>       <Text text="{/po_selectedPO/LIFNR}"/>
+            <Label text="Order Date"/>   <Text text="{/po_selectedPO/AEDAT}"/>
+            <Label text="Pay Terms"/>    <Text text="{/po_selectedPO/ZTERM}"/>
+            <Label text="Currency"/>     <Text text="{/po_selectedPO/currency}"/>
+            <Label text="Status"/>       <Text text="{/po_selectedPO/STATU}"/>
+        </f:content>
+    </f:SimpleForm>
+
+    <Button text="Delete This PO" type="Reject" icon="sap-icon://delete" press="onDeletePO" class="sapUiSmallMargin"/>
+
+    <Panel headerText="Line Items" class="sapUiSmallMargin">
+        <t:Table id="poDetailItemTable" rows="{/po_selectedPOItems}" visibleRowCount="5">
+            <t:columns>
+                <t:Column width="80px"> <Label text="Item"/>     <t:template><Text  text="{EBELP}"/></t:template></t:Column>
+                <t:Column><Label text="Material"/> <t:template><Text  text="{MATNR}"/></t:template></t:Column>
+                <t:Column><Label text="Qty"/>      <t:template><Input value="{MENGE}" type="Number" width="80px"/></t:template></t:Column>
+                <t:Column><Label text="UOM"/>      <t:template><Text  text="{MEINS}"/></t:template></t:Column>
+                <t:Column><Label text="Plant"/>    <t:template><Text  text="{WERKS}"/></t:template></t:Column>
+                <t:Column><Label text="Price"/>    <t:template><Text  text="{NETPR}"/></t:template></t:Column>
+                <t:Column><Label text="Update"/>   <t:template><Button text="Update Qty" press="onUpdateItemInline"/></t:template></t:Column>
+            </t:columns>
+        </t:Table>
+    </Panel>
+
+    <Toolbar>
+        <Button text="Back to List" icon="sap-icon://nav-back" press="onBackFromDetail"/>
+    </Toolbar>
 </Panel>
-<!--  ── UPDATE ITEM ──  -->
-<Panel headerText="Update PO Item" visible="{/po_showUpdate}" class="sapUiLargeMargin">
-<Toolbar>
-<Button text="Back" icon="sap-icon://nav-back" press="onBack"/>
-</Toolbar>
-<HBox class="sapUiSmallMargin">
-<Input value="{/po_searchItemId}" placeholder="Enter Item EBELP"/>
-<Button text="Search" icon="sap-icon://search" press="onSearchItem" class="sapUiSmallMarginBegin"/>
-</HBox>
-<Panel visible="{/po_editItemMode}" class="sapUiSmallMargin">
-<f:SimpleForm layout="ResponsiveGridLayout">
-<f:content>
-<Label text="Item No"/>
-<Text text="{/po_editItemPayload/EBELP}"/>
-<Label text="Material"/>
-<Text text="{/po_editItemPayload/MATNR}"/>
-<Label text="Quantity"/>
-<Input value="{/po_editItemPayload/MENGE}"/>
-<Label text="UOM"/>
-<Text text="{/po_editItemPayload/MEINS}"/>
-</f:content>
-</f:SimpleForm>
-<Toolbar>
-<Button text="Update" type="Accept" icon="sap-icon://save" press="onUpdateItem"/>
-</Toolbar>
+
+<!-- ── UPDATE ITEM ── -->
+<Panel headerText="Update PO Item Quantity" visible="{/po_showUpdate}" class="sapUiLargeMargin">
+    <Toolbar><Button text="Back" icon="sap-icon://nav-back" press="onBack"/></Toolbar>
+
+    <f:SimpleForm layout="ResponsiveGridLayout">
+        <f:content>
+            <Label text="PO Number (EBELN)"/>
+            <HBox>
+                <Input value="{/po_searchEBELN}" placeholder="Enter PO Number"/>
+                <Button text="Load Items" icon="sap-icon://search" press="onLoadItemsByPO" class="sapUiSmallMarginBegin"/>
+            </HBox>
+        </f:content>
+    </f:SimpleForm>
+
+    <Panel visible="{/po_editItemMode}" headerText="Select Item to Update" class="sapUiSmallMargin">
+        <t:Table id="poUpdateItemTable" rows="{/po_updateItems}" selectionMode="Single" visibleRowCount="5">
+            <t:columns>
+                <t:Column><Label text="Item No"/>  <t:template><Text text="{EBELP}"/></t:template></t:Column>
+                <t:Column><Label text="Material"/> <t:template><Text text="{MATNR}"/></t:template></t:Column>
+                <t:Column><Label text="Qty"/>      <t:template><Input value="{MENGE}" type="Number"/></t:template></t:Column>
+                <t:Column><Label text="UOM"/>      <t:template><Text text="{MEINS}"/></t:template></t:Column>
+                <t:Column><Label text="Action"/>   <t:template><Button text="Update" type="Accept" press="onUpdateSingleItem"/></t:template></t:Column>
+            </t:columns>
+        </t:Table>
+    </Panel>
 </Panel>
-</Panel>
+
 </content>
 </Page>
 </mvc:View>

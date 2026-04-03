@@ -25,6 +25,10 @@ sap.ui.define([
 
         onNavPurchase: function () {
             this.getOwnerComponent().getRouter().navTo("purchase");
+        },
+        
+        onNavMaterial: function () {
+            this.getOwnerComponent().getRouter().navTo("material");
         }
     });
 });

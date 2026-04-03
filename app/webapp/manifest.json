@@ -1,29 +1,43 @@
 {
-
   "_version": "1.32.0",
   "sap.app": {
     "id": "unified",
     "type": "application",
     "title": "Ccentrik Unified Management System",
-    "description": "Merged UI for all 4 teams",
+    "description": "Merged UI for all teams",
     "dataSources": {
       "salesOrderService": {
-        "uri": "/odata/v4/sales-order/",
+        "uri": "/so-headertable/",
+        "type": "OData",
+        "settings": { "odataVersion": "4.0" }
+      },
+      "salesItemService": {
+        "uri": "/so-itemtable/",
         "type": "OData",
         "settings": { "odataVersion": "4.0" }
       },
       "customerService": {
-        "uri": "/odata/v4/customer/",
+        "uri": "/odata/v4/c-customer/",
         "type": "OData",
         "settings": { "odataVersion": "4.0" }
       },
       "vendorService": {
-        "uri": "/odata/v4/vendor/",
+        "uri": "/vendor/",
         "type": "OData",
         "settings": { "odataVersion": "4.0" }
       },
       "purchaseOrderService": {
-        "uri": "/po/",
+        "uri": "/po-table/",
+        "type": "OData",
+        "settings": { "odataVersion": "4.0" }
+      },
+      "purchaseItemService": {
+        "uri": "/po-table/",
+        "type": "OData",
+        "settings": { "odataVersion": "4.0" }
+      },
+      "materialService": {
+        "uri": "/odata/v4/material-master/",
         "type": "OData",
         "settings": { "odataVersion": "4.0" }
       }
@@ -63,20 +77,22 @@
         "async": true
       },
       "routes": [
-        { "name": "home",        "pattern": "",           "target": "home"        },
-        { "name": "salesorder",  "pattern": "salesorder", "target": "salesorder"  },
-        { "name": "salesitem",   "pattern": "salesitem",  "target": "salesitem"   },
-        { "name": "customer",    "pattern": "customer",   "target": "customer"    },
-        { "name": "vendor",      "pattern": "vendor",     "target": "vendor"      },
-        { "name": "purchase",    "pattern": "purchase",   "target": "purchase"    }
+        { "name": "home",       "pattern": "",          "target": "home"       },
+        { "name": "salesorder", "pattern": "salesorder","target": "salesorder" },
+        { "name": "salesitem",  "pattern": "salesitem", "target": "salesitem"  },
+        { "name": "customer",   "pattern": "customer",  "target": "customer"   },
+        { "name": "vendor",     "pattern": "vendor",    "target": "vendor"     },
+        { "name": "purchase",   "pattern": "purchase",  "target": "purchase"   },
+        { "name": "material",   "pattern": "material",  "target": "material"   }
       ],
       "targets": {
-        "home":       { "viewName": "Home",        "viewLevel": 1 },
-        "salesorder": { "viewName": "SalesOrder",  "viewLevel": 2 },
-        "salesitem":  { "viewName": "SalesItem",   "viewLevel": 2 },
-        "customer":   { "viewName": "Customer",    "viewLevel": 2 },
-        "vendor":     { "viewName": "Vendor",      "viewLevel": 2 },
-        "purchase":   { "viewName": "Purchase",    "viewLevel": 2 }
+        "home":       { "viewName": "Home",     "viewLevel": 1 },
+        "salesorder": { "viewName": "SalesOrder","viewLevel": 2 },
+        "salesitem":  { "viewName": "SalesItem", "viewLevel": 2 },
+        "customer":   { "viewName": "Customer",  "viewLevel": 2 },
+        "vendor":     { "viewName": "Vendor",    "viewLevel": 2 },
+        "purchase":   { "viewName": "Purchase",  "viewLevel": 2 },
+        "material":   { "viewName": "Material",  "viewLevel": 2 }
       }
     }
   }

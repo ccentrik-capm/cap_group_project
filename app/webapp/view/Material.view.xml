@@ -1,0 +1,141 @@
+<mvc:View
+    controllerName="unified.controller.Material"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.ui.layout.form"
+    displayBlock="true">
+
+<Page title="Material Master" showNavButton="true" navButtonPress="onNavHome">
+<content>
+
+<!-- ── OPERATION SELECTOR ── -->
+<Panel headerText="Select Operation" visible="{/mat_showOp}" class="sapUiLargeMargin">
+    <VBox alignItems="Center" class="sapUiMediumMarginTop sapUiMediumMarginBottom">
+        <HBox justifyContent="Center">
+            <Button text="Create" type="Accept"     icon="sap-icon://add"    press="onMaterialCreate" width="160px" class="sapUiSmallMargin"/>
+            <Button text="Read"   type="Emphasized" icon="sap-icon://search" press="onMaterialRead"   width="160px" class="sapUiSmallMargin"/>
+            <Button text="Update" type="Default"    icon="sap-icon://edit"   press="onMaterialUpdate" width="160px" class="sapUiSmallMargin"/>
+            <Button text="Delete" type="Reject"     icon="sap-icon://delete" press="onMaterialDelete" width="160px" class="sapUiSmallMargin"/>
+        </HBox>
+    </VBox>
+</Panel>
+
+<!-- ── CREATE ── -->
+<Panel headerText="Create Material" visible="{/mat_showCreate}" class="sapUiLargeMargin">
+    <Toolbar><Button text="Back" icon="sap-icon://nav-back" press="onMaterialBack"/></Toolbar>
+    <f:SimpleForm editable="true" layout="ResponsiveGridLayout" columnsL="2" columnsM="1">
+        <f:content>
+            <Label text="Material Number" required="true"/>
+            <Input value="{/mat_create/MATNR}" placeholder="e.g. MAT001" maxLength="18"/>
+
+            <Label text="Material Type" required="true"/>
+            <Input value="{/mat_create/MTART}" placeholder="e.g. FERT" maxLength="4"/>
+
+            <Label text="Industry Sector"/>
+            <Input value="{/mat_create/MBRSH}" placeholder="e.g. M" maxLength="1"/>
+
+            <Label text="Material Group"/>
+            <Input value="{/mat_create/MATKL}" placeholder="e.g. 001" maxLength="9"/>
+
+            <Label text="Status"/>
+            <Input value="{/mat_create/PSTAT}" placeholder="e.g. 10" maxLength="15"/>
+        </f:content>
+    </f:SimpleForm>
+    <Toolbar>
+        <Button text="Save"  type="Accept"  icon="sap-icon://save"      press="onSaveMaterial"/>
+        <Button text="Clear" type="Default" icon="sap-icon://clear-all" press="onClearMaterial" class="sapUiSmallMarginBegin"/>
+    </Toolbar>
+</Panel>
+
+<!-- ── READ ── -->
+<Panel headerText="View Materials" visible="{/mat_showRead}" class="sapUiLargeMargin">
+    <Toolbar><Button text="Back" icon="sap-icon://nav-back" press="onMaterialBack"/></Toolbar>
+    <f:SimpleForm layout="ResponsiveGridLayout">
+        <f:content>
+            <Label text="Material Number"/>
+            <HBox>
+                <Input id="mat_searchMatnr"
+                       value="{/mat_searchMatnr}"
+                       placeholder="Enter Material Number (blank = all)"/>
+                <Button icon="sap-icon://search"       text="Search"   press="onSearchMaterial"  class="sapUiSmallMarginBegin"/>
+                <Button icon="sap-icon://clear-filter" text="Show All" press="onShowAllMaterial" class="sapUiSmallMarginBegin"/>
+            </HBox>
+        </f:content>
+    </f:SimpleForm>
+    <Panel headerText="Results" visible="{/mat_showReadResult}">
+        <Table id="mat_resultsTable" mode="None">
+            <columns>
+                <Column width="150px"><Text text="Material No."/></Column>
+                <Column width="120px"><Text text="Type"/></Column>
+                <Column width="120px"><Text text="Industry"/></Column>
+                <Column width="150px"><Text text="Group"/></Column>
+                <Column width="120px"><Text text="Status"/></Column>
+            </columns>
+        </Table>
+    </Panel>
+</Panel>
+
+<!-- ── UPDATE ── -->
+<Panel headerText="Update Material" visible="{/mat_showUpdate}" class="sapUiLargeMargin">
+    <Toolbar><Button text="Back" icon="sap-icon://nav-back" press="onMaterialBack"/></Toolbar>
+    <f:SimpleForm layout="ResponsiveGridLayout">
+        <f:content>
+            <Label text="Material Number"/>
+            <HBox>
+                <Input id="mat_updSearchMatnr"
+                       value="{/mat_searchKunnr}"
+                       placeholder="Enter Material Number"/>
+                <Button text="Search &amp; Load" icon="sap-icon://search" press="onLoadMaterial" class="sapUiSmallMarginBegin"/>
+            </HBox>
+        </f:content>
+    </f:SimpleForm>
+    <Panel visible="{/mat_showUpdateForm}" headerText="Edit Material">
+        <f:SimpleForm editable="true" layout="ResponsiveGridLayout" columnsL="2" columnsM="1">
+            <f:content>
+                <Label text="Material Number"/>  <Text text="{/mat_update/MATNR}"/>
+                <Label text="Material Type"/>    <Input value="{/mat_update/MTART}"/>
+                <Label text="Industry Sector"/>  <Input value="{/mat_update/MBRSH}"/>
+                <Label text="Material Group"/>   <Input value="{/mat_update/MATKL}"/>
+                <Label text="Status"/>           <Input value="{/mat_update/PSTAT}"/>
+            </f:content>
+        </f:SimpleForm>
+        <Toolbar>
+            <Button text="Update" type="Accept" icon="sap-icon://save"   press="onUpdateMaterial"/>
+            <Button text="Cancel" type="Reject" icon="sap-icon://cancel" press="onCancelUpdate" class="sapUiSmallMarginBegin"/>
+        </Toolbar>
+    </Panel>
+</Panel>
+
+<!-- ── DELETE ── -->
+<Panel headerText="Delete Material" visible="{/mat_showDelete}" class="sapUiLargeMargin">
+    <Toolbar><Button text="Back" icon="sap-icon://nav-back" press="onMaterialBack"/></Toolbar>
+    <f:SimpleForm>
+        <f:content>
+            <Label text="Material Number"/>
+            <HBox>
+                <Input id="mat_deleteMatnr"
+                       value="{/mat_deleteMatnr}"
+                       placeholder="Enter Material Number"/>
+                <Button text="Search" icon="sap-icon://search" press="onDeleteSearchMaterial" class="sapUiSmallMarginBegin"/>
+            </HBox>
+        </f:content>
+    </f:SimpleForm>
+    <Panel visible="{/mat_showDeleteResult}" headerText="Results">
+        <Table id="mat_deleteTable" mode="MultiSelect">
+            <columns>
+                <Column width="150px"><Text text="Material No."/></Column>
+                <Column width="120px"><Text text="Type"/></Column>
+                <Column width="120px"><Text text="Industry"/></Column>
+                <Column width="150px"><Text text="Group"/></Column>
+                <Column width="120px"><Text text="Status"/></Column>
+            </columns>
+        </Table>
+        <Toolbar>
+            <Button text="Delete Selected" type="Reject" icon="sap-icon://delete" press="onDeleteSelectedMaterial"/>
+        </Toolbar>
+    </Panel>
+</Panel>
+
+</content>
+</Page>
+</mvc:View>

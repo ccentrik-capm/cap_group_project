@@ -5,7 +5,7 @@ sap.ui.define([
 ], function (Controller, MessageBox, MessageToast) {
     "use strict";
 
-    var BASE = "/odata/v4/sales-order/ZSO_VBAP";
+    var BASE = "/so-itemtable/So_Itemstables";
 
     return Controller.extend("unified.controller.SalesItem", {
 
@@ -37,7 +37,7 @@ sap.ui.define([
         },
 
         _fetchCsrfToken: function () {
-            return fetch("/odata/v4/sales-order/", {
+            return fetch("/so-itemtable/", {
                 method: "GET", headers: { "X-CSRF-Token": "Fetch" }
             }).then(function (r) {
                 return r.headers.get("X-CSRF-Token") || "";

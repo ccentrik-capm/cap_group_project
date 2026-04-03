@@ -13,6 +13,7 @@ sap.ui.define([
         init: function () {
             UIComponent.prototype.init.apply(this, arguments);
 
+            // ── Shared JSON model (Sales Order / Sales Item / Vendor / PO state) ──
             var oModel = new JSONModel({
                 // ── Sales Order ──────────────────────────────────────
                 so_showOp: true,
@@ -94,12 +95,27 @@ sap.ui.define([
                     { MATNR: "MAT003", MAKTX: "Spark Plug" },
                     { MATNR: "MAT004", MAKTX: "Steel Sheet 2mm" },
                     { MATNR: "MAT005", MAKTX: "Bearing 6205" }
-                ]
-            });
+                ],
 
+                // ── Material Master ──────────────────────────────────
+                mat_showOp:           true,
+                mat_showCreate:       false,
+                mat_showRead:         false,
+                mat_showUpdate:       false,
+                mat_showDelete:       false,
+                mat_showReadResult:   false,
+                mat_showUpdateForm:   false,
+                mat_showDeleteResult: false,
+                mat_searchMatnr:      "",
+                mat_searchKunnr:      "",
+                mat_deleteMatnr:      "",
+                mat_create: { MATNR: "", MTART: "", MBRSH: "", MATKL: "", PSTAT: "" },
+                mat_update: { MATNR: "", MTART: "", MBRSH: "", MATKL: "", PSTAT: "" },
+                mat_deleteResults:    []
+            });
             this.setModel(oModel);
 
-            // OData model for Customer (uses OData v4)
+            // ── OData model: Customer ─────────────────────────────────
             var oCmModel = new ODataModel({
                 serviceUrl: "/odata/v4/customer/",
                 synchronizationMode: "None",
@@ -107,6 +123,15 @@ sap.ui.define([
                 autoExpandSelect: true
             });
             this.setModel(oCmModel, "customer");
+
+            // ── OData model: Material Master ──────────────────────────
+            var oMaterialModel = new ODataModel({
+                serviceUrl: "/odata/v4/material-master/",
+                synchronizationMode: "None",
+                operationMode: "Server",
+                autoExpandSelect: true
+            });
+            this.setModel(oMaterialModel, "material");
 
             this.getRouter().initialize();
         }
