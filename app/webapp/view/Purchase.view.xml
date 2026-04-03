@@ -17,6 +17,7 @@
             <Button text="Create"      type="Accept"     icon="sap-icon://add"    press="onSelectCreate" width="160px" class="sapUiSmallMargin"/>
             <Button text="Read"        type="Emphasized" icon="sap-icon://search" press="onSelectRead"   width="160px" class="sapUiSmallMargin"/>
             <Button text="Update Item" type="Default"    icon="sap-icon://edit"   press="onSelectUpdate" width="160px" class="sapUiSmallMargin"/>
+            <Button text="Delete Item" type="Reject"    icon="sap-icon://delete"   press="onSelectDeleteItem" width="160px" class="sapUiSmallMargin"/>
         </HBox>
     </VBox>
 </Panel>
@@ -107,23 +108,85 @@
 
     <Button text="Delete This PO" type="Reject" icon="sap-icon://delete" press="onDeletePO" class="sapUiSmallMargin"/>
 
-    <Panel headerText="Line Items" class="sapUiSmallMargin">
-        <t:Table id="poDetailItemTable" rows="{/po_selectedPOItems}" visibleRowCount="5">
-            <t:columns>
-                <t:Column width="80px"> <Label text="Item"/>     <t:template><Text  text="{EBELP}"/></t:template></t:Column>
-                <t:Column><Label text="Material"/> <t:template><Text  text="{MATNR}"/></t:template></t:Column>
-                <t:Column><Label text="Qty"/>      <t:template><Input value="{MENGE}" type="Number" width="80px"/></t:template></t:Column>
-                <t:Column><Label text="UOM"/>      <t:template><Text  text="{MEINS}"/></t:template></t:Column>
-                <t:Column><Label text="Plant"/>    <t:template><Text  text="{WERKS}"/></t:template></t:Column>
-                <t:Column><Label text="Price"/>    <t:template><Text  text="{NETPR}"/></t:template></t:Column>
-                <t:Column><Label text="Update"/>   <t:template><Button text="Update Qty" press="onUpdateItemInline"/></t:template></t:Column>
-            </t:columns>
-        </t:Table>
-    </Panel>
-
+<Panel headerText="Line Items" class="sapUiSmallMargin">
+    <Table items="{/po_selectedPOItems}">
+        <columns>
+            <Column><Text text="Item No"/></Column>
+            <Column><Text text="Material"/></Column>
+            <Column><Text text="Qty"/></Column>
+            <Column><Text text="UOM"/></Column>
+            <Column><Text text="Plant"/></Column>
+            <Column><Text text="Price"/></Column>
+            <Column><Text text="Action"/></Column>
+        </columns>
+        <items>
+            <ColumnListItem>
+                <cells>
+                    <Text text="{EBELP}"/>
+                    <Text text="{MATNR}"/>
+                    <Input value="{MENGE}" type="Number" width="80px"/>
+                    <Text text="{MEINS}"/>
+                    <Text text="{WERKS}"/>
+                    <Text text="{NETPR}"/>
+                    <Button text="Update Qty" press="onUpdateItemInline"/>
+                </cells>
+            </ColumnListItem>
+        </items>
+    </Table>
+</Panel>
     <Toolbar>
         <Button text="Back to List" icon="sap-icon://nav-back" press="onBackFromDetail"/>
     </Toolbar>
+</Panel>
+
+<Panel headerText="Delete Specific PO Item" visible="{/po_showDeleteItem}" class="sapUiLargeMargin">
+    <headerToolbar>
+        <OverflowToolbar>
+            <Button text="Back" icon="sap-icon://nav-back" press="onBack"/>
+            <ToolbarSpacer />
+            </OverflowToolbar>
+    </headerToolbar>
+
+    <content>
+<f:SimpleForm layout="ResponsiveGridLayout" editable="true">
+    <f:content>
+        <Label text="PO Number (EBELN)"/>
+        <Input value="{/po_searchEBELN}" placeholder="Enter PO Number"/>
+        <Label text="Item Number (EBELP)"/>
+        <HBox>
+            <Input value="{/po_searchEBELP}" placeholder="Enter Item Number"/>
+            <Button text="Search" icon="sap-icon://search" press="onSearchItemToDelete" class="sapUiSmallMarginBegin"/>
+        </HBox>
+    </f:content>
+</f:SimpleForm>
+
+<Table id="poDeleteItemTable" items="{/po_deleteItems}" mode="MultiSelect">
+    <columns>
+        <Column><Text text="Item No"/></Column>
+        <Column><Text text="Material"/></Column>
+        <Column><Text text="Quantity"/></Column>
+        <Column><Text text="UOM"/></Column>
+    </columns>
+    <items>
+        <ColumnListItem>
+            <cells>
+                <Text text="{EBELP}"/>
+                <Text text="{MATNR}"/>
+                <Text text="{MENGE}"/>
+                <Text text="{MEINS}"/>
+            </cells>
+        </ColumnListItem>
+    </items>
+</Table>
+        <OverflowToolbar style="Clear" class="sapUiSmallMarginTop">
+            <ToolbarSpacer/>
+            <Button text="Delete Selected" 
+                    type="Reject" 
+                    icon="sap-icon://delete" 
+                    press="onDeleteSelectedItems" 
+                    visible="{= ${/po_deleteItems}.length > 0 }"/>
+        </OverflowToolbar>
+    </content>
 </Panel>
 
 <!-- ── UPDATE ITEM ── -->
