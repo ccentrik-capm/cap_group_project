@@ -91,7 +91,7 @@
         "salesitem":  { "viewName": "SalesItem", "viewLevel": 2 },
         "customer":   { "viewName": "Customer",  "viewLevel": 2 },
         "vendor":     { "viewName": "Vendor",    "viewLevel": 2 },
-        "purchase":   { "viewName": "Purchase",  "viewLevel": 2 },
+        "purchase": { "viewName": "Purchase", "viewLevel": 2, "viewId": "purchaseView" },
         "material":   { "viewName": "Material",  "viewLevel": 2 }
       }
     }
